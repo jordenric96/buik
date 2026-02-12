@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0a0a14">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Neon Core RPG v5</title>
+    <title>Neon Core RPG Final</title>
     <style>
         :root {
             /* --- NEON CYBER PALET --- */
@@ -333,36 +333,35 @@
     async function requestWakeLock() { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {} }
     async function releaseWakeLock() { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } }
 
-    // --- DATA ---
+    // --- DATA (OPTIMALE VOLGORDE) ---
     const exercises = [
-        { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' },
-        { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' }, 
-        { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // NEW
-        { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // NEW
-        { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // NEW
-        { id: 'stretch', name: 'Hamstring Stretch', type: 'time', unit: 'sec' }, // NEW (Pos 6)
-        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },
-        { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }, 
-        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' },
-        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' }
+        { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' }, // 1. Warmup
+        { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' },  // 2. Duwen
+        { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // 3. Trekken R
+        { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // 4. Trekken L
+        { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // 5. Isolatie
+        { id: 'stretch', name: 'Hamstring Stretch', type: 'time', unit: 'sec' }, // 6. Rust
+        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' }, // 7. Zwaar Core
+        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },  // 8. Schuin
+        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' },     // 9. Rotatie
+        { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }   // 10. Finisher
     ];
 
     const weeklyProgression = {
-        1: { plank: 30, pushup: 8, row_r:10, row_l:10, dips:8, stretch:30, bicycle: 20, leghold: 15, legraise: 10, twists: 20 },
-        2: { plank: 35, pushup: 10, row_r:12, row_l:12, dips:10, stretch:30, bicycle: 24, leghold: 20, legraise: 12, twists: 24 },
-        3: { plank: 40, pushup: 12, row_r:12, row_l:12, dips:12, stretch:35, bicycle: 30, leghold: 20, legraise: 14, twists: 30 },
-        4: { plank: 45, pushup: 15, row_r:15, row_l:15, dips:15, stretch:35, bicycle: 36, leghold: 25, legraise: 15, twists: 36 },
-        5: { plank: 50, pushup: 18, row_r:15, row_l:15, dips:15, stretch:40, bicycle: 40, leghold: 30, legraise: 15, twists: 40 },
-        6: { plank: 60, pushup: 20, row_r:18, row_l:18, dips:18, stretch:40, bicycle: 44, leghold: 30, legraise: 18, twists: 44 },
-        7: { plank: 75, pushup: 22, row_r:20, row_l:20, dips:20, stretch:45, bicycle: 50, leghold: 40, legraise: 20, twists: 50 },
-        8: { plank: 90, pushup: 25, row_r:20, row_l:20, dips:25, stretch:45, bicycle: 60, leghold: 45, legraise: 20, twists: 60 }
+        1: { plank: 30, pushup: 8, row_r:10, row_l:10, dips:8, stretch:30, legraise: 10, bicycle: 20, twists: 20, leghold: 15 },
+        2: { plank: 35, pushup: 10, row_r:12, row_l:12, dips:10, stretch:30, legraise: 12, bicycle: 24, twists: 24, leghold: 20 },
+        3: { plank: 40, pushup: 12, row_r:12, row_l:12, dips:12, stretch:35, legraise: 14, bicycle: 30, twists: 30, leghold: 20 },
+        4: { plank: 45, pushup: 15, row_r:15, row_l:15, dips:15, stretch:35, legraise: 15, bicycle: 36, twists: 36, leghold: 25 },
+        5: { plank: 50, pushup: 18, row_r:15, row_l:15, dips:15, stretch:40, legraise: 15, bicycle: 40, twists: 40, leghold: 30 },
+        6: { plank: 60, pushup: 20, row_r:18, row_l:18, dips:18, stretch:40, legraise: 18, bicycle: 44, twists: 44, leghold: 30 },
+        7: { plank: 75, pushup: 22, row_r:20, row_l:20, dips:20, stretch:45, legraise: 20, bicycle: 50, twists: 50, leghold: 40 },
+        8: { plank: 90, pushup: 25, row_r:20, row_l:20, dips:25, stretch:45, legraise: 20, bicycle: 60, twists: 60, leghold: 45 }
     };
 
     let state = {
         currentWeek: 1, history: [], totalExercisesDone: 0,
         isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, 
         timerInterval: null,
-        // Session Timer
         sessionStartTime: 0, sessionInterval: null, sessionDuration: 0
     };
 
@@ -448,7 +447,6 @@
         state.isActive = true; state.round = 1; state.exIndex = 0;
         updateLevelUI(); 
         
-        // Start Session Timer
         state.sessionStartTime = Date.now();
         state.sessionDuration = 0;
         if(state.sessionInterval) clearInterval(state.sessionInterval);
@@ -636,20 +634,16 @@
 
         // Build stats
         for(let w=1; w<=8; w++) {
-            // Find workouts for this week
             const workouts = state.history.filter(h => h.week === w);
             const count = workouts.length;
-            
             if(count === 0) continue;
 
             const targets = weeklyProgression[w];
             
-            // Calc durations
             workouts.forEach(w => {
                 if(w.duration) totalSecondsTrained += w.duration;
             });
 
-            // Generate Week Card
             let weekHtml = `
                 <div class="glass-panel panel-blue">
                     <h3 style="margin:0; color:#fff;">Week ${w} <span style="font-size:0.8rem; color:var(--text-mute)">(${count} trainingen)</span></h3>
@@ -672,12 +666,10 @@
             container.innerHTML += weekHtml; 
         }
 
-        // TIME FORMATTING
         let hours = Math.floor(totalSecondsTrained / 3600);
         let mins = Math.floor((totalSecondsTrained % 3600) / 60);
         let timeString = hours > 0 ? `${hours}u ${mins}m` : `${mins} min`;
 
-        // GRAND TOTAL HEADER
         let grandTotalHtml = `
             <div class="grand-total-box">
                 <h2 style="margin:0 0 5px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
