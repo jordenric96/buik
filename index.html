@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>Core Trainer Pro - Cyber Theme</title>
+    <meta name="theme-color" content="#0f0c29">
+    <link rel="manifest" href="manifest.json">
+    <title>Core Trainer Pro</title>
     <style>
         :root {
             /* CYBER PALET */
@@ -12,7 +14,7 @@
             --success-grad: linear-gradient(to right, #11998e, #38ef7d);
             --warning-grad: linear-gradient(to right, #ff416c, #ff4b2b);
             
-            /* Glassmorphism variabelen */
+            /* Glassmorphism */
             --glass-bg: rgba(255, 255, 255, 0.08);
             --glass-border: 1px solid rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
@@ -34,6 +36,7 @@
             overflow-x: hidden;
             overflow-y: auto;
             -webkit-font-smoothing: antialiased;
+            user-select: none; /* Voorkomt selecteren tekst tijdens sporten */
         }
 
         /* --- SCREENS --- */
@@ -42,22 +45,15 @@
             flex-direction: column;
             min-height: 100vh;
             padding: 20px;
-            padding-bottom: 140px; /* Ruimte voor de startknop */
+            padding-bottom: 140px; 
             box-sizing: border-box;
         }
-
         .screen.active { display: flex; }
 
-        /* --- DASHBOARD --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+        /* --- HEADER & BUTTONS --- */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: 1px; }
         
-        /* Glass Buttons */
         .btn-icon {
             background: rgba(255, 255, 255, 0.1);
             border: var(--glass-border);
@@ -75,8 +71,8 @@
         }
         .btn-icon:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
 
-        /* WEEK SELECTOR CARD */
-        .week-card {
+        /* --- DASHBOARD COMPONENTS --- */
+        .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: var(--blur);
             -webkit-backdrop-filter: var(--blur);
@@ -85,220 +81,122 @@
             border-radius: var(--radius);
             padding: 25px;
             margin-bottom: 25px;
-            text-align: center;
         }
 
-        .week-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .week-title { font-weight: 800; font-size: 1.4rem; }
-        .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;}
+        .week-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .week-title { font-weight: 800; font-size: 1.4rem; text-align: center; }
+        .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; text-align: center;}
 
-        /* CHECKBOX VISUALIZER (Neon style) */
-        .tracker-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
+        /* CHECKBOX VISUALIZER */
+        .tracker-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .check-circle {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: transparent; 
-            font-size: 1.4rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            color: transparent; font-size: 1.4rem; transition: all 0.4s;
         }
         .check-circle.completed {
-            background: var(--success-grad);
-            border: none;
-            color: #fff;
-            transform: scale(1.15);
-            box-shadow: 0 0 25px #38ef7d; /* Neon Glow */
-        }
-        .check-label {
-            font-size: 0.75rem;
-            color: var(--text-mute);
-            margin-bottom: 5px;
-            display: block;
-            font-weight: 700;
-            letter-spacing: 1px;
+            background: var(--success-grad); border: none; color: #fff;
+            transform: scale(1.15); box-shadow: 0 0 25px #38ef7d;
         }
 
-        /* PREVIEW BOX */
-        .preview-box {
-            background: var(--glass-bg);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            border: var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-        .preview-box h3 {
-            margin-top: 0; font-size: 1.1rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: 15px;
-            color: var(--text-mute);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .preview-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 1.1rem;
-        }
+        /* PREVIEW LIST */
+        .preview-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 1.1rem; }
         .preview-item:last-child { border-bottom: none; }
-        .preview-item span:last-child {
-            color: #00c6ff;
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(0, 198, 255, 0.4);
-        }
-        
-        /* FLOATING START BUTTON */
-        .bottom-action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 25px;
-            background: linear-gradient(to top, #0f0c29 70%, rgba(15, 12, 41, 0));
-            box-sizing: border-box;
-            text-align: center;
-            z-index: 100;
-        }
-
-        .big-start-btn {
-            background: var(--primary-grad);
-            color: white;
-            border: none;
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            font-size: 1.3rem;
-            font-weight: 800;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(0, 198, 255, 0.5);
-            transition: transform 0.2s;
-            letter-spacing: 1px;
-        }
-        .big-start-btn:active { transform: scale(0.98); }
+        .preview-item span:last-child { color: #00c6ff; font-weight: 800; text-shadow: 0 0 10px rgba(0, 198, 255, 0.4); }
 
         /* --- PLAYER --- */
         #playerScreen {
-            background: rgba(15, 12, 41, 0.85);
-            text-align: center;
-            justify-content: center;
-            align-items: center;
+            background: rgba(15, 12, 41, 0.95);
+            text-align: center; justify-content: center; align-items: center;
             padding-bottom: 20px;
-        }
-
-        #roundDisplay {
-            font-weight: 700; letter-spacing: 1px;
-            background: rgba(255,255,255,0.1) !important;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 50; /* Boven dashboard */
         }
 
         .timer-circle {
-            width: 240px;
-            height: 240px;
-            border-radius: 50%;
+            width: 240px; height: 240px; border-radius: 50%;
             border: 4px solid rgba(255,255,255,0.1); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 40px auto;
-            font-size: 5rem;
-            font-weight: 900;
-            font-variant-numeric: tabular-nums;
-            transition: all 0.5s ease;
+            display: flex; align-items: center; justify-content: center;
+            margin: 30px auto; font-size: 5rem; font-weight: 900;
+            font-variant-numeric: tabular-nums; transition: all 0.5s ease;
             text-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
+        /* 5 BOLLETJES PROGRESSIE */
+        .dots-container {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;
+        }
+        .progress-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); transition: all 0.3s;
+        }
+        .progress-dot.active { background: #00c6ff; box-shadow: 0 0 10px #00c6ff; transform: scale(1.2); }
+        .progress-dot.done { background: #38ef7d; }
+
         .player-instruction { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; }
         .player-detail { font-size: 1.2rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 2px;}
-        
-        .action-btn {
-            background: var(--success-grad);
-            color: white;
-            border: none;
-            padding: 22px 40px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 80%;
-            max-width: 320px;
-            font-weight: 800;
-            box-shadow: 0 0 30px rgba(56, 239, 125, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stop-btn {
-            background: transparent;
-            color: var(--text-mute);
-            border: none;
-            margin-top: 25px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.9rem;
-            padding: 10px;
-        }
-        .stop-btn:hover { color: #ff416c; }
 
-        /* States Colors & Glows */
-        .state-rest .timer-circle { 
-            box-shadow: 0 0 50px rgba(255, 75, 43, 0.6), inset 0 0 20px rgba(255, 75, 43, 0.2);
-            color: #ff4b2b;
-            border-color: #ff4b2b;
-        }
-        .state-work .timer-circle { 
-            box-shadow: 0 0 60px rgba(56, 239, 125, 0.7), inset 0 0 20px rgba(56, 239, 125, 0.3);
-            color: #38ef7d;
-            border-color: #38ef7d;
-        }
-        .state-manual .timer-circle { 
-            box-shadow: 0 0 50px rgba(0, 198, 255, 0.6), inset 0 0 20px rgba(0, 198, 255, 0.2);
-            color: #00c6ff;
-            border-style: dashed;
-            border-color: #00c6ff;
+        /* STATES */
+        .state-rest .timer-circle { box-shadow: 0 0 50px rgba(255, 75, 43, 0.6); color: #ff4b2b; border-color: #ff4b2b; }
+        .state-work .timer-circle { box-shadow: 0 0 60px rgba(56, 239, 125, 0.7); color: #38ef7d; border-color: #38ef7d; }
+        .state-manual .timer-circle { box-shadow: 0 0 50px rgba(0, 198, 255, 0.6); color: #00c6ff; border-style: dashed; border-color: #00c6ff; }
+
+        /* --- STATS GRID --- */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .stat-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center; }
+        .stat-num { font-size: 1.5rem; font-weight: bold; color: #00c6ff; display: block;}
+        .stat-lbl { font-size: 0.8rem; color: var(--text-mute); }
+        
+        .grand-total { 
+            background: var(--primary-grad); padding: 20px; border-radius: var(--radius); 
+            text-align: center; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 114, 255, 0.3);
         }
 
-        /* --- STATS OVERLAY --- */
-        #statsScreen { 
-            background: rgba(15, 12, 41, 0.95);
-            backdrop-filter: blur(15px);
-            z-index: 200; 
+        /* --- POPUP MODAL --- */
+        #modalOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 999; display: none;
+            align-items: center; justify-content: center;
         }
-        .chart-bar { background: rgba(255,255,255,0.1); height: 14px; border-radius: 7px; margin-top: 8px; overflow: hidden; }
-        .chart-fill { height: 100%; background: var(--primary-grad); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,198,255,0.5); }
+        #modalOverlay.show { display: flex; }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px; border-radius: 30px; text-align: center;
+            max-width: 80%; box-shadow: 0 0 50px rgba(0, 198, 255, 0.3);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* FLOATING ACTION BUTTON */
+        .bottom-action-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px;
+            background: linear-gradient(to top, #0f0c29 70%, rgba(15, 12, 41, 0));
+            text-align: center; z-index: 100; box-sizing: border-box;
+        }
+        .big-btn {
+            background: var(--primary-grad); color: white; border: none;
+            width: 100%; max-width: 500px; padding: 20px;
+            font-size: 1.3rem; font-weight: 800; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 0 30px rgba(0, 198, 255, 0.5);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .action-btn { background: var(--success-grad); box-shadow: 0 0 30px rgba(56, 239, 125, 0.5); }
+        .close-modal-btn { background: var(--warning-grad); margin-top: 20px; padding: 15px 30px; border-radius: 30px; border:none; color:white; font-weight:bold; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
     <div id="dashboardScreen" class="screen active">
         <header>
-            <h1>Mijn Schema</h1>
+            <h1>Core Trainer Pro</h1>
             <button class="btn-icon" onclick="showStats()">📊</button>
         </header>
 
-        <div class="week-card">
+        <div class="glass-panel">
             <div class="week-nav">
                 <button class="btn-icon" onclick="changeWeek(-1)">←</button>
                 <div>
@@ -308,26 +206,21 @@
                 <button class="btn-icon" onclick="changeWeek(1)">→</button>
             </div>
             
-            <div style="margin-top: 10px;">
-                <span class="check-label">WEKELIJKS DOEL (3x)</span>
-                <div class="tracker-container" id="weekTracker">
-                    <div class="check-circle"></div>
-                    <div class="check-circle"></div>
-                    <div class="check-circle"></div>
-                </div>
+            <div class="tracker-container" id="weekTracker">
+                <div class="check-circle"></div>
+                <div class="check-circle"></div>
+                <div class="check-circle"></div>
             </div>
+            <div style="text-align: center; margin-top: 10px; color: var(--text-mute); font-size: 0.8rem;">3 Sessies per week</div>
         </div>
 
-        <div class="preview-box">
-            <h3 style="margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
-                Circuit Vandaag (3 Rondes)
-            </h3>
-            <div id="previewList">
-                </div>
+        <div class="glass-panel">
+            <h3 style="margin-top:0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Vandaag (3 Rondes)</h3>
+            <div id="previewList"></div>
         </div>
 
         <div class="bottom-action-bar">
-            <button class="big-start-btn" onclick="startWorkout()">START TRAINING ▶</button>
+            <button class="big-btn" onclick="startWorkout()">START TRAINING ▶</button>
         </div>
     </div>
 
@@ -337,6 +230,10 @@
         </div>
         
         <div style="width: 100%;">
+            <div class="dots-container" id="progressDots">
+                <div class="progress-dot"></div><div class="progress-dot"></div><div class="progress-dot"></div><div class="progress-dot"></div><div class="progress-dot"></div>
+            </div>
+
             <div class="player-instruction" id="exName">Klaarmaken...</div>
             <div class="player-detail" id="exDetail">Start in</div>
             
@@ -344,28 +241,63 @@
         </div>
 
         <div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
-            <button id="actionBtn" class="action-btn" onclick="handleAction()">Start</button>
-            <button class="stop-btn" onclick="quitWorkout()">Afbreken</button>
+            <button id="actionBtn" class="big-btn action-btn" onclick="handleAction()" style="display:none; width:80%;">VOLGENDE</button>
+            <button onclick="quitWorkout()" style="background:none; border:none; color:var(--text-mute); margin-top:20px; text-decoration:underline;">Afbreken</button>
         </div>
     </div>
 
-    <div id="statsScreen" class="screen">
+    <div id="statsScreen" class="screen" style="background: rgba(15, 12, 41, 0.98); z-index: 100;">
         <header>
             <h1>Statistieken</h1>
             <button class="btn-icon" onclick="closeStats()">✕</button>
         </header>
-        <div id="statsContent">
+        
+        <div style="overflow-y: auto; padding-bottom: 20px;" id="statsContent">
             </div>
     </div>
 
+    <div id="modalOverlay">
+        <div class="modal-content">
+            <div style="font-size: 4rem; margin-bottom: 10px;">🏆</div>
+            <h2 style="font-size: 2rem; margin: 0; background: var(--success-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">GEFELICITEERD!</h2>
+            <p style="color: var(--text-mute); font-size: 1.2rem;">Je training zit erop. Goed gewerkt!</p>
+            <button class="close-modal-btn" onclick="closeModal()">SLUITEN & OPSLAAN</button>
+        </div>
+    </div>
+
 <script>
+    // --- AUDIO CONTEXT (Web Audio API) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playBeep(freq = 440, duration = 0.1, type = 'sine') {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // --- WAKE LOCK ---
+    let wakeLock = null;
+    async function requestWakeLock() {
+        try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) { console.log('Wake Lock error:', err); }
+    }
+    async function releaseWakeLock() {
+        if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; }
+    }
+
     // --- DATA ---
     const exercises = [
-        { id: 'plank', name: 'De Plank', type: 'time' },
-        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps' },
-        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps' },
-        { id: 'mountain', name: 'Mountain Climbers', type: 'time' },
-        { id: 'twists', name: 'Russian Twists', type: 'reps' }
+        { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' },
+        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'reps' },
+        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'reps' },
+        { id: 'mountain', name: 'Mountain Climbers', type: 'time', unit: 'sec' },
+        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'reps' }
     ];
 
     const weeklyProgression = {
@@ -379,12 +311,9 @@
         8: { plank: 90, bicycle: 60, legraise: 20, mountain: 60, twists: 60 }
     };
 
-    // --- STATE ---
     let state = {
         currentWeek: 1,
-        history: [], // { date: '2023-10-01', week: 1 }
-        
-        // Player state
+        history: [], 
         isActive: false,
         round: 1,
         exIndex: 0,
@@ -399,7 +328,7 @@
 
     // --- INIT ---
     window.onload = function() {
-        const saved = localStorage.getItem('abs_pro_v2');
+        const saved = localStorage.getItem('abs_pro_v3'); // v3 voor nieuwe structuur
         if(saved) {
             const parsed = JSON.parse(saved);
             state.currentWeek = parsed.currentWeek || 1;
@@ -409,94 +338,77 @@
     };
 
     function saveData() {
-        localStorage.setItem('abs_pro_v2', JSON.stringify({
+        localStorage.setItem('abs_pro_v3', JSON.stringify({
             currentWeek: state.currentWeek,
             history: state.history
         }));
     }
 
-    // --- DASHBOARD FUNCTIONS ---
+    // --- DASHBOARD ---
     function renderDashboard() {
         document.getElementById('weekDisplay').innerText = `Week ${state.currentWeek}`;
         
-        // 1. Render Preview List
         const targets = weeklyProgression[state.currentWeek];
         const list = document.getElementById('previewList');
         list.innerHTML = '';
         exercises.forEach(ex => {
             const val = targets[ex.id];
-            const unit = ex.type === 'time' ? 'sec' : 'x';
-            list.innerHTML += `
-                <div class="preview-item">
-                    <span style="font-weight:600;">${ex.name}</span>
-                    <span>${val} ${unit}</span>
-                </div>`;
+            list.innerHTML += `<div class="preview-item"><span>${ex.name}</span><span>${val} ${ex.unit}</span></div>`;
         });
 
-        // 2. Render Checkboxes (De 3 cirkels)
         const workoutsThisWeek = state.history.filter(h => h.week === state.currentWeek).length;
-        const trackerContainer = document.getElementById('weekTracker');
-        trackerContainer.innerHTML = '';
-        
-        for(let i = 0; i < 3; i++) {
-            if(i < workoutsThisWeek) {
-                // Gedaan -> Groen met vinkje
-                trackerContainer.innerHTML += `<div class="check-circle completed">✓</div>`;
-            } else {
-                // Niet gedaan -> Leeg
-                trackerContainer.innerHTML += `<div class="check-circle"></div>`;
-            }
+        const tracker = document.getElementById('weekTracker');
+        tracker.innerHTML = '';
+        for(let i=0; i<3; i++) {
+            tracker.innerHTML += `<div class="check-circle ${i < workoutsThisWeek ? 'completed' : ''}">${i < workoutsThisWeek ? '✓' : ''}</div>`;
         }
     }
 
     function changeWeek(dir) {
         if((state.currentWeek === 1 && dir === -1) || (state.currentWeek === 8 && dir === 1)) return;
         state.currentWeek += dir;
-        saveData();
         renderDashboard();
     }
 
     // --- PLAYER LOGIC ---
     function startWorkout() {
+        requestWakeLock();
+        // Init Audio Context op user click
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+
         state.isActive = true;
         state.round = 1;
         state.exIndex = 0;
         
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('playerScreen').classList.add('active');
-        
-        // Force scroll top
-        window.scrollTo(0,0);
-        
         startPrep();
     }
 
-    function quitWorkout() {
-        if(confirm("Stoppen met de workout?")) {
-            stopTimer();
-            state.isActive = false;
-            document.getElementById('playerScreen').classList.remove('active');
-            document.getElementById('dashboardScreen').classList.add('active');
+    function updateDots() {
+        const container = document.getElementById('progressDots');
+        container.innerHTML = '';
+        // 5 Dots voor de 5 oefeningen
+        for(let i=0; i<exercises.length; i++) {
+            let className = 'progress-dot';
+            if (i < state.exIndex) className += ' done';
+            if (i === state.exIndex) className += ' active';
+            container.innerHTML += `<div class="${className}"></div>`;
         }
     }
 
-    function stopTimer() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-    }
-
-    // PHASE 1: PREP
     function startPrep() {
-        stopTimer();
+        if(state.timerInterval) clearInterval(state.timerInterval);
         state.phase = 'prep';
         state.timeLeft = PREP_TIME;
         
+        updateDots();
         const currentEx = exercises[state.exIndex];
         
-        // UI
         document.getElementById('playerScreen').className = 'screen active state-rest';
         document.getElementById('roundDisplay').innerText = `Ronde ${state.round} / ${TOTAL_ROUNDS}`;
-        document.getElementById('exName').innerText = "Volgende: " + currentEx.name;
-        document.getElementById('exDetail').innerText = "Maak je klaar...";
+        document.getElementById('exName').innerText = "Rust / Wissel";
+        document.getElementById('exDetail').innerText = "Volgende: " + currentEx.name;
         document.getElementById('actionBtn').style.display = 'none';
         
         updateTimerDisplay();
@@ -504,18 +416,22 @@
         state.timerInterval = setInterval(() => {
             state.timeLeft--;
             updateTimerDisplay();
+            
+            // Beep laatste 3 sec van rust
+            if(state.timeLeft > 0 && state.timeLeft <= 3) playBeep(600, 0.05);
+
             if(state.timeLeft <= 0) startExercise();
         }, 1000);
     }
 
-    // PHASE 2: EXERCISE
     function startExercise() {
-        stopTimer();
+        if(state.timerInterval) clearInterval(state.timerInterval);
         const currentEx = exercises[state.exIndex];
         const targets = weeklyProgression[state.currentWeek];
         const targetVal = targets[currentEx.id];
 
         document.getElementById('exName').innerText = currentEx.name;
+        updateDots();
         
         if (currentEx.type === 'time') {
             state.phase = 'work';
@@ -529,7 +445,13 @@
             state.timerInterval = setInterval(() => {
                 state.timeLeft--;
                 updateTimerDisplay();
-                if(state.timeLeft <= 0) nextStep();
+                // Beep laatste 5 sec
+                if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(880, 0.1);
+                
+                if(state.timeLeft <= 0) {
+                    playBeep(1200, 0.3); // Finish beep
+                    nextStep();
+                }
             }, 1000);
         } else {
             state.phase = 'manual';
@@ -537,7 +459,6 @@
             document.getElementById('exDetail').innerText = `Doe ${targetVal} herhalingen`;
             document.getElementById('timerDisplay').innerText = targetVal;
             document.getElementById('actionBtn').style.display = 'block';
-            document.getElementById('actionBtn').innerText = "IK BEN KLAAR";
         }
     }
 
@@ -546,94 +467,4 @@
     }
 
     function nextStep() {
-        stopTimer();
-        
-        if (state.exIndex < exercises.length - 1) {
-            state.exIndex++;
-            startPrep();
-        } else {
-            if (state.round < TOTAL_ROUNDS) {
-                state.round++;
-                state.exIndex = 0;
-                startRoundRest();
-            } else {
-                finishWorkout();
-            }
-        }
-    }
-
-    function startRoundRest() {
-        state.timeLeft = ROUND_REST;
-        state.phase = 'prep';
-        document.getElementById('playerScreen').className = 'screen active state-rest';
-        document.getElementById('exName').innerText = "RONDE PAUZE";
-        document.getElementById('exDetail').innerText = "Adem in, adem uit...";
-        document.getElementById('actionBtn').style.display = 'none';
-        
-        state.timerInterval = setInterval(() => {
-            state.timeLeft--;
-            updateTimerDisplay();
-            if(state.timeLeft <= 0) startExercise();
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        document.getElementById('timerDisplay').innerText = state.timeLeft;
-    }
-
-    function finishWorkout() {
-        stopTimer();
-        // Save stats
-        state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
-        saveData();
-        
-        alert("GEFELICITEERD! Training voltooid.");
-        document.getElementById('playerScreen').classList.remove('active');
-        document.getElementById('dashboardScreen').classList.add('active');
-        renderDashboard(); 
-    }
-
-    // --- STATS LOGIC ---
-    function showStats() {
-        document.getElementById('dashboardScreen').classList.remove('active');
-        document.getElementById('statsScreen').classList.add('active');
-        renderStats();
-    }
-
-    function closeStats() {
-        document.getElementById('statsScreen').classList.remove('active');
-        document.getElementById('dashboardScreen').classList.add('active');
-    }
-
-    function renderStats() {
-        const container = document.getElementById('statsContent');
-        container.innerHTML = '';
-        
-        // Count workouts per week
-        const counts = {};
-        state.history.forEach(h => { counts[h.week] = (counts[h.week] || 0) + 1; });
-
-        let html = '';
-        for(let i=1; i<=8; i++) {
-            const c = counts[i] || 0;
-            const pct = Math.min(100, (c / 3) * 100);
-            const color = c >= 3 ? 'var(--success-grad)' : 'var(--primary-grad)';
-            
-            html += `
-                <div style="margin-bottom: 15px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <strong>Week ${i}</strong>
-                        <span>${c} / 3</span>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-fill" style="width: ${pct}%; background: ${color}"></div>
-                    </div>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-    }
-</script>
-
-</body>
-</html>
+        if(state.timerInterval) clearInterval(s
