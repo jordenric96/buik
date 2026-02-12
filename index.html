@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>Core Trainer Pro</title>
+    <title>Core Trainer Pro V2</title>
     <style>
         :root {
             --primary: #3b82f6;
@@ -11,7 +11,7 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --dark: #1e293b;
-            --light: #f8fafc;
+            --light: #f1f5f9;
             --white: #ffffff;
             --radius: 16px;
         }
@@ -22,20 +22,21 @@
             color: var(--dark);
             margin: 0;
             padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Voorkom scrollen tijdens workout */
+            /* Scroll probleem opgelost: */
+            min-height: 100vh;
+            overflow-x: hidden; 
+            overflow-y: auto; 
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- SCREENS --- */
         .screen {
             display: none;
             flex-direction: column;
-            height: 100%;
+            min-height: 100vh;
             padding: 20px;
+            padding-bottom: 120px; /* Ruimte voor de knop onderaan */
             box-sizing: border-box;
-            overflow-y: auto;
         }
 
         .screen.active {
@@ -53,7 +54,7 @@
         
         .btn-icon {
             background: var(--white);
-            border: 1px solid #e2e8f0;
+            border: 1px solid #cbd5e1;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -62,17 +63,89 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            transition: transform 0.1s;
+        }
+        .btn-icon:active { transform: scale(0.95); }
+
+        /* WEEK SELECTOR */
+        .week-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            text-align: center;
         }
 
-        .week-selector {
+        .week-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 15px;
+        }
+        .week-title { font-weight: 800; font-size: 1.2rem; }
+        .week-focus { font-size: 0.85rem; color: #64748b; margin-top: 2px;}
+
+        /* CHECKBOX VISUALIZER */
+        .tracker-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .check-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .check-circle.completed {
+            background: var(--success);
+            border-color: var(--success);
+            transform: scale(1.1);
+        }
+        .check-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* EXERCISE LIST */
+        .preview-box {
             background: var(--white);
-            padding: 15px;
+            padding: 20px;
             border-radius: var(--radius);
-            margin-bottom: 20px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .preview-item:last-child { border-bottom: none; }
+        
+        /* FLOATING START BUTTON */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, var(--light) 80%, rgba(241, 245, 249, 0));
+            box-sizing: border-box;
+            text-align: center;
+            z-index: 100;
         }
 
         .big-start-btn {
@@ -80,57 +153,36 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 20px;
+            max-width: 500px;
+            padding: 18px;
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: 700;
             border-radius: var(--radius);
             cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
-            margin-top: auto; /* Duw naar beneden */
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+            transition: transform 0.1s;
         }
-
-        .stats-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background: var(--white);
-            padding: 15px;
-            border-radius: var(--radius);
-            text-align: center;
-        }
-        .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 0.8rem; color: #64748b; }
+        .big-start-btn:active { transform: scale(0.98); }
 
         /* --- PLAYER --- */
         #playerScreen {
             background: var(--dark);
             color: white;
             text-align: center;
-            justify-content: center;
-        }
-
-        .round-indicator {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            justify-content: center; /* Center verticaal */
+            align-items: center;
+            padding-bottom: 20px;
         }
 
         .timer-circle {
-            width: 250px;
-            height: 250px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             border: 8px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px auto;
+            margin: 30px auto;
             font-size: 4rem;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
@@ -138,17 +190,9 @@
             transition: border-color 0.3s;
         }
 
-        .player-instruction {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .player-detail {
-            font-size: 1.2rem;
-            color: #94a3b8;
-            margin-bottom: 40px;
-        }
-
+        .player-instruction { font-size: 1.6rem; font-weight: bold; margin-bottom: 5px; }
+        .player-detail { font-size: 1.1rem; color: #94a3b8; }
+        
         .action-btn {
             background: var(--success);
             color: white;
@@ -159,6 +203,7 @@
             cursor: pointer;
             width: 80%;
             max-width: 300px;
+            font-weight: bold;
         }
         
         .stop-btn {
@@ -168,6 +213,7 @@
             margin-top: 20px;
             cursor: pointer;
             text-decoration: underline;
+            padding: 10px;
         }
 
         /* States Colors */
@@ -175,29 +221,10 @@
         .state-work .timer-circle { border-color: var(--success); color: var(--success); }
         .state-manual .timer-circle { border-color: var(--primary); color: white; border-style: dashed; }
 
-        /* --- STATS MODAL --- */
-        .chart-bar {
-            background: #e2e8f0;
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        .chart-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 1s ease;
-        }
-        .history-list {
-            margin-top: 20px;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
+        /* --- STATS OVERLAY --- */
+        #statsScreen { background: var(--white); z-index: 200; }
+        .chart-bar { background: #e2e8f0; height: 12px; border-radius: 6px; margin-top: 5px; overflow: hidden; }
+        .chart-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1s ease; }
 
     </style>
 </head>
@@ -209,52 +236,58 @@
             <button class="btn-icon" onclick="showStats()">📊</button>
         </header>
 
-        <div class="week-selector">
-            <button class="btn-icon" onclick="changeWeek(-1)">←</button>
-            <div style="text-align: center;">
-                <div style="font-weight: bold; font-size: 1.1rem;" id="weekDisplay">Week 1</div>
-                <div style="font-size: 0.8rem; color: #64748b;">Focus: Fundering</div>
+        <div class="week-card">
+            <div class="week-nav">
+                <button class="btn-icon" onclick="changeWeek(-1)">←</button>
+                <div>
+                    <div class="week-title" id="weekDisplay">Week 1</div>
+                    <div class="week-focus">Focus: Fundering</div>
+                </div>
+                <button class="btn-icon" onclick="changeWeek(1)">→</button>
             </div>
-            <button class="btn-icon" onclick="changeWeek(1)">→</button>
+            
+            <div style="margin-top: 10px;">
+                <span class="check-label">WEKELIJKS DOEL (3x)</span>
+                <div class="tracker-container" id="weekTracker">
+                    <div class="check-circle"></div>
+                    <div class="check-circle"></div>
+                    <div class="check-circle"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="stats-summary">
-            <div class="stat-card">
-                <div class="stat-val" id="totalWorkouts">0</div>
-                <div class="stat-label">Workouts Voltooid</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-val" id="currentStreak">0</div>
-                <div class="stat-label">Dagen Reeks</div>
-            </div>
+        <div class="preview-box">
+            <h3 style="margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+                Circuit Vandaag (3 Rondes)
+            </h3>
+            <div id="previewList">
+                </div>
         </div>
 
-        <div style="background: white; padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
-            <h3 style="margin-top: 0;">Circuit Vandaag</h3>
-            <ul style="padding-left: 20px; color: #475569; margin-bottom: 0;" id="previewList">
-                </ul>
+        <div class="bottom-action-bar">
+            <button class="big-start-btn" onclick="startWorkout()">START TRAINING ▶</button>
         </div>
-
-        <button class="big-start-btn" onclick="startWorkout()">START WORKOUT ▶</button>
     </div>
 
     <div id="playerScreen" class="screen">
-        <div class="round-indicator" id="roundDisplay">Ronde 1 / 3</div>
+        <div style="position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 20px;">
+            <span id="roundDisplay">Ronde 1 / 3</span>
+        </div>
         
-        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div style="width: 100%;">
             <div class="player-instruction" id="exName">Klaarmaken...</div>
             <div class="player-detail" id="exDetail">Start in</div>
             
             <div class="timer-circle" id="timerDisplay">8</div>
         </div>
 
-        <div style="padding-bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
             <button id="actionBtn" class="action-btn" onclick="handleAction()">Start</button>
-            <button class="stop-btn" onclick="quitWorkout()">Stoppen</button>
+            <button class="stop-btn" onclick="quitWorkout()">Afbreken</button>
         </div>
     </div>
 
-    <div id="statsScreen" class="screen" style="background: white;">
+    <div id="statsScreen" class="screen">
         <header>
             <h1>Statistieken</h1>
             <button class="btn-icon" onclick="closeStats()">✕</button>
@@ -293,17 +326,18 @@
         isActive: false,
         round: 1,
         exIndex: 0,
-        phase: 'idle', // idle, prep, work, manual
+        phase: 'idle', 
         timeLeft: 0,
         timerInterval: null
     };
 
     const TOTAL_ROUNDS = 3;
     const PREP_TIME = 8;
+    const ROUND_REST = 30;
 
     // --- INIT ---
     window.onload = function() {
-        const saved = localStorage.getItem('abs_pro_data');
+        const saved = localStorage.getItem('abs_pro_v2');
         if(saved) {
             const parsed = JSON.parse(saved);
             state.currentWeek = parsed.currentWeek || 1;
@@ -313,7 +347,7 @@
     };
 
     function saveData() {
-        localStorage.setItem('abs_pro_data', JSON.stringify({
+        localStorage.setItem('abs_pro_v2', JSON.stringify({
             currentWeek: state.currentWeek,
             history: state.history
         }));
@@ -322,17 +356,35 @@
     // --- DASHBOARD FUNCTIONS ---
     function renderDashboard() {
         document.getElementById('weekDisplay').innerText = `Week ${state.currentWeek}`;
-        document.getElementById('totalWorkouts').innerText = state.history.length;
         
-        // Preview list
+        // 1. Render Preview List
         const targets = weeklyProgression[state.currentWeek];
         const list = document.getElementById('previewList');
         list.innerHTML = '';
         exercises.forEach(ex => {
             const val = targets[ex.id];
-            const unit = ex.type === 'time' ? 'sec' : 'reps';
-            list.innerHTML += `<li>${ex.name}: <strong>${val} ${unit}</strong></li>`;
+            const unit = ex.type === 'time' ? 'sec' : 'x';
+            list.innerHTML += `
+                <div class="preview-item">
+                    <span style="font-weight:600;">${ex.name}</span>
+                    <span style="color:var(--primary); font-weight:bold;">${val} ${unit}</span>
+                </div>`;
         });
+
+        // 2. Render Checkboxes (De 3 cirkels)
+        const workoutsThisWeek = state.history.filter(h => h.week === state.currentWeek).length;
+        const trackerContainer = document.getElementById('weekTracker');
+        trackerContainer.innerHTML = '';
+        
+        for(let i = 0; i < 3; i++) {
+            if(i < workoutsThisWeek) {
+                // Gedaan -> Groen met vinkje
+                trackerContainer.innerHTML += `<div class="check-circle completed">✓</div>`;
+            } else {
+                // Niet gedaan -> Leeg
+                trackerContainer.innerHTML += `<div class="check-circle"></div>`;
+            }
+        }
     }
 
     function changeWeek(dir) {
@@ -342,18 +394,7 @@
         renderDashboard();
     }
 
-    function showStats() {
-        document.getElementById('dashboardScreen').classList.remove('active');
-        document.getElementById('statsScreen').classList.add('active');
-        renderStats();
-    }
-
-    function closeStats() {
-        document.getElementById('statsScreen').classList.remove('active');
-        document.getElementById('dashboardScreen').classList.add('active');
-    }
-
-    // --- PLAYER LOGIC ---
+    // --- PLAYER LOGIC (Zelfde als vorig, maar cleaner) ---
     function startWorkout() {
         state.isActive = true;
         state.round = 1;
@@ -361,6 +402,9 @@
         
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('playerScreen').classList.add('active');
+        
+        // Force scroll top
+        window.scrollTo(0,0);
         
         startPrep();
     }
@@ -378,28 +422,27 @@
         if(state.timerInterval) clearInterval(state.timerInterval);
     }
 
-    // PHASE 1: PREP (8 seconden tussendoor)
+    // PHASE 1: PREP
     function startPrep() {
         stopTimer();
         state.phase = 'prep';
         state.timeLeft = PREP_TIME;
         
-        // UI Updates
         const currentEx = exercises[state.exIndex];
+        
+        // UI
         document.getElementById('playerScreen').className = 'screen active state-rest';
         document.getElementById('roundDisplay').innerText = `Ronde ${state.round} / ${TOTAL_ROUNDS}`;
         document.getElementById('exName').innerText = "Volgende: " + currentEx.name;
         document.getElementById('exDetail').innerText = "Maak je klaar...";
-        document.getElementById('actionBtn').style.display = 'none'; // Verberg knop tijdens rust
+        document.getElementById('actionBtn').style.display = 'none';
         
         updateTimerDisplay();
 
         state.timerInterval = setInterval(() => {
             state.timeLeft--;
             updateTimerDisplay();
-            if(state.timeLeft <= 0) {
-                startExercise();
-            }
+            if(state.timeLeft <= 0) startExercise();
         }, 1000);
     }
 
@@ -410,11 +453,9 @@
         const targets = weeklyProgression[state.currentWeek];
         const targetVal = targets[currentEx.id];
 
-        // UI Updates
         document.getElementById('exName').innerText = currentEx.name;
         
         if (currentEx.type === 'time') {
-            // TIME BASED
             state.phase = 'work';
             state.timeLeft = targetVal;
             document.getElementById('playerScreen').className = 'screen active state-work';
@@ -426,60 +467,52 @@
             state.timerInterval = setInterval(() => {
                 state.timeLeft--;
                 updateTimerDisplay();
-                if(state.timeLeft <= 0) {
-                    nextStep();
-                }
+                if(state.timeLeft <= 0) nextStep();
             }, 1000);
-
         } else {
-            // REP BASED (Manual)
             state.phase = 'manual';
             document.getElementById('playerScreen').className = 'screen active state-manual';
             document.getElementById('exDetail').innerText = `Doe ${targetVal} herhalingen`;
             document.getElementById('timerDisplay').innerText = targetVal;
             document.getElementById('actionBtn').style.display = 'block';
-            document.getElementById('actionBtn').innerText = "KLAAR";
+            document.getElementById('actionBtn').innerText = "IK BEN KLAAR";
         }
     }
 
-    // Handler voor de knop
     function handleAction() {
-        if(state.phase === 'manual') {
-            nextStep();
-        }
+        if(state.phase === 'manual') nextStep();
     }
 
     function nextStep() {
         stopTimer();
         
-        // Check if round is done
         if (state.exIndex < exercises.length - 1) {
-            // Next exercise same round
             state.exIndex++;
             startPrep();
         } else {
-            // End of round
             if (state.round < TOTAL_ROUNDS) {
                 state.round++;
                 state.exIndex = 0;
-                // Lange rust tussen rondes? Laten we 30s doen
-                state.timeLeft = 30; // Override prep time
-                state.phase = 'prep';
-                document.getElementById('playerScreen').className = 'screen active state-rest';
-                document.getElementById('exName').innerText = "Ronde Pauze";
-                document.getElementById('exDetail').innerText = "Even op adem komen";
-                document.getElementById('actionBtn').style.display = 'none';
-                
-                state.timerInterval = setInterval(() => {
-                    state.timeLeft--;
-                    updateTimerDisplay();
-                    if(state.timeLeft <= 0) startExercise(); // Start direct eerste oefening ronde 2
-                }, 1000);
-
+                startRoundRest();
             } else {
                 finishWorkout();
             }
         }
+    }
+
+    function startRoundRest() {
+        state.timeLeft = ROUND_REST;
+        state.phase = 'prep';
+        document.getElementById('playerScreen').className = 'screen active state-rest';
+        document.getElementById('exName').innerText = "RONDE PAUZE";
+        document.getElementById('exDetail').innerText = "Adem in, adem uit...";
+        document.getElementById('actionBtn').style.display = 'none';
+        
+        state.timerInterval = setInterval(() => {
+            state.timeLeft--;
+            updateTimerDisplay();
+            if(state.timeLeft <= 0) startExercise();
+        }, 1000);
     }
 
     function updateTimerDisplay() {
@@ -488,43 +521,47 @@
 
     function finishWorkout() {
         stopTimer();
+        // Save stats
         state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
         saveData();
+        
         alert("GEFELICITEERD! Training voltooid.");
         document.getElementById('playerScreen').classList.remove('active');
         document.getElementById('dashboardScreen').classList.add('active');
-        renderDashboard();
+        renderDashboard(); // Update circles immediately
     }
 
     // --- STATS LOGIC ---
+    function showStats() {
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('statsScreen').classList.add('active');
+        renderStats();
+    }
+
+    function closeStats() {
+        document.getElementById('statsScreen').classList.remove('active');
+        document.getElementById('dashboardScreen').classList.add('active');
+    }
+
     function renderStats() {
         const container = document.getElementById('statsContent');
         container.innerHTML = '';
-
-        if(state.history.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Nog geen trainingen voltooid.</p>';
-            return;
-        }
-
-        // Groepeer per week
-        const weeksCompleted = {};
-        state.history.forEach(h => {
-            weeksCompleted[h.week] = (weeksCompleted[h.week] || 0) + 1;
-        });
-
-        let html = '<h3>Aantal Trainingen per Week</h3>';
         
+        // Count workouts per week
+        const counts = {};
+        state.history.forEach(h => { counts[h.week] = (counts[h.week] || 0) + 1; });
+
+        let html = '';
         for(let i=1; i<=8; i++) {
-            const count = weeksCompleted[i] || 0;
-            // Max 3 trainingen per week is 100%
-            const pct = Math.min(100, (count / 3) * 100);
-            const color = count >= 3 ? 'var(--success)' : 'var(--primary)';
+            const c = counts[i] || 0;
+            const pct = Math.min(100, (c / 3) * 100);
+            const color = c >= 3 ? 'var(--success)' : 'var(--primary)';
             
             html += `
-                <div style="margin-bottom: 10px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
-                        <span>Week ${i}</span>
-                        <span>${count}/3</span>
+                <div style="margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <strong>Week ${i}</strong>
+                        <span>${c} / 3</span>
                     </div>
                     <div class="chart-bar">
                         <div class="chart-fill" style="width: ${pct}%; background: ${color}"></div>
@@ -532,19 +569,7 @@
                 </div>
             `;
         }
-
-        html += '<h3 style="margin-top:30px;">Recente Activiteit</h3>';
-        state.history.slice().reverse().slice(0, 5).forEach(h => {
-            const d = new Date(h.date);
-            html += `
-                <div class="history-item">
-                    <span>${d.toLocaleDateString('nl-NL')}</span>
-                    <strong>Week ${h.week}</strong>
-                </div>
-            `;
-        });
-
-        container.innerHTML += html;
+        container.innerHTML = html;
     }
 </script>
 
