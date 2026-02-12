@@ -224,13 +224,24 @@
 
         /* STATS SCREEN */
         #statsScreen { background: #050505; z-index: 100; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .stat-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-num { font-size: 1.5rem; font-weight: bold; color: var(--neon-blue); display: block; text-shadow: 0 0 10px var(--neon-blue); }
-        .grand-total { 
+        
+        .grand-total-box { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--neon-pink);
-            padding: 20px; border-radius: var(--radius); text-align: center; margin-bottom: 20px; 
+            padding: 20px; border-radius: var(--radius); margin-bottom: 20px; 
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); color: #fff;
+        }
+
+        /* Nieuwe stats styling */
+        .stats-detail-row {
+            display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
+        }
+        .stats-detail-row:last-child { border-bottom: none; }
+        .stats-detail-row span:last-child { color: var(--neon-blue); font-weight: bold; }
+        
+        .stats-section-title {
+            color: var(--neon-gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 10px; display: block; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 5px;
         }
 
     </style>
@@ -404,7 +415,6 @@
                 const parsed = JSON.parse(saved);
                 state.currentWeek = parsed.currentWeek || 1;
                 state.history = parsed.history || [];
-                // Calculate XP based on history
                 state.totalExercisesDone = state.history.length * (7 * 3);
             }
         } else {
@@ -442,15 +452,13 @@
 
     function updateLevelUI() {
         const info = getLevelInfo();
-        
         // Dashboard
         document.getElementById('dashSymbol').innerText = info.symbol;
         document.getElementById('dashLevelTitle').innerText = `LEVEL ${info.level}`;
         document.getElementById('dashXpBar').style.width = `${info.progress}%`;
-        
         // In-game
         document.getElementById('gameLevel').innerText = `LVL ${info.level}`;
-        document.getElementById('gameSymbol').innerText = info.symbol; // UPDATE SYMBOL IN GAME
+        document.getElementById('gameSymbol').innerText = info.symbol; 
         document.getElementById('gameXpBar').style.width = `${info.progress}%`;
     }
 
@@ -489,7 +497,7 @@
         if(audioCtx.state === 'suspended') audioCtx.resume();
 
         state.isActive = true; state.round = 1; state.exIndex = 0;
-        updateLevelUI(); // Show current level at start
+        updateLevelUI(); 
         
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('playerScreen').classList.add('active');
@@ -562,7 +570,7 @@
         state.totalExercisesDone++;
         saveData();
         
-        updateLevelUI(); // Check if level went up!
+        updateLevelUI(); 
         const floatEl = document.getElementById('xpFloat');
         floatEl.classList.remove('animate');
         void floatEl.offsetWidth; 
@@ -634,7 +642,7 @@
         renderDashboard();
     }
 
-    // --- STATS ---
+    // --- STATS CALCULATION ---
     function showStats() {
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('statsScreen').classList.add('active');
@@ -644,37 +652,64 @@
         document.getElementById('statsScreen').classList.remove('active');
         document.getElementById('dashboardScreen').classList.add('active');
     }
+
     function calculateStats() {
         const container = document.getElementById('statsContent');
         container.innerHTML = '';
-        let grandTotalSec = 0;
-        let grandTotalReps = 0;
+        
+        // Data Structures
+        let grandTotal = {}; // { plank: 300, pushup: 50... }
+        exercises.forEach(ex => grandTotal[ex.id] = 0);
+
+        // Build stats
         for(let w=1; w<=8; w++) {
             const count = state.history.filter(h => h.week === w).length;
             if(count === 0) continue;
+
             const targets = weeklyProgression[w];
-            let weekSec = (targets.plank * 3 * count) + (targets.mountain * 3 * count) + (targets.leghold * 3 * count);
-            let weekReps = (targets.pushup * 3 * count) + (targets.bicycle * 3 * count) + (targets.legraise * 3 * count) + (targets.twists * 3 * count);
-            grandTotalSec += weekSec;
-            grandTotalReps += weekReps;
-            container.innerHTML += `
+            
+            // Generate Week Card
+            let weekHtml = `
                 <div class="glass-panel panel-blue">
                     <h3 style="margin:0; color:#fff;">Week ${w} <span style="font-size:0.8rem; color:var(--text-mute)">(${count} trainingen)</span></h3>
-                    <div class="stats-grid">
-                        <div class="stat-box"><span class="stat-num">${weekSec}</span><span class="stat-lbl">Seconden</span></div>
-                        <div class="stat-box"><span class="stat-num">${weekReps}</span><span class="stat-lbl">Reps</span></div>
+                    <div style="margin-top:10px;">
+            `;
+
+            exercises.forEach(ex => {
+                const totalForEx = targets[ex.id] * 3 * count; // 3 rounds * count sessions
+                grandTotal[ex.id] += totalForEx;
+                
+                weekHtml += `
+                    <div class="stats-detail-row">
+                        <span>${ex.name}</span>
+                        <span>${totalForEx} ${ex.unit}</span>
                     </div>
+                `;
+            });
+            
+            weekHtml += `</div></div>`;
+            container.innerHTML += weekHtml; // Add week card to bottom
+        }
+
+        // Generate Grand Total Header (Top of list)
+        let grandTotalHtml = `
+            <div class="grand-total-box">
+                <h2 style="margin:0 0 15px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
+        `;
+        
+        exercises.forEach(ex => {
+            grandTotalHtml += `
+                <div class="stats-detail-row">
+                    <span>${ex.name}</span>
+                    <span style="font-size:1.1rem; color:var(--neon-gold);">${grandTotal[ex.id]} ${ex.unit}</span>
                 </div>
             `;
-        }
-        const totalHtml = `
-            <div class="grand-total">
-                <h2 style="margin:0 0 10px 0; color:var(--neon-pink);">TOTAAL RESULTAAT</h2>
-                <div style="font-size:2.5rem; font-weight:900; line-height:1;">${grandTotalReps} <span style="font-size:1rem; font-weight:400;">REPS</span></div>
-                <div style="font-size:2.5rem; font-weight:900; line-height:1; margin-top:10px;">${grandTotalSec} <span style="font-size:1rem; font-weight:400;">SECONDEN</span></div>
-            </div>
-        `;
-        container.innerHTML = totalHtml + container.innerHTML;
+        });
+        grandTotalHtml += `</div>`;
+
+        // Prepend grand total
+        container.innerHTML = grandTotalHtml + container.innerHTML;
+
         if(state.history.length === 0) container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-mute);">Nog geen data.</div>';
     }
 </script>
