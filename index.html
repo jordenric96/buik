@@ -64,6 +64,7 @@
             font-size: 3.5rem; margin-bottom: 5px;
             filter: drop-shadow(0 0 10px var(--neon-gold));
             animation: float 3s ease-in-out infinite;
+            display: inline-block;
         }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         
@@ -131,18 +132,33 @@
             padding-bottom: 20px; z-index: 50;
         }
 
-        /* IN-GAME XP BAR */
+        /* IN-GAME XP BAR & SYMBOL */
         .player-xp-container {
-            position: absolute; top: 0; left: 0; width: 100%; padding: 10px 20px; box-sizing: border-box;
-            background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px; box-sizing: border-box;
+            background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
-        .xp-text { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; color: var(--neon-blue); font-weight: bold; }
+        
+        .xp-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+        }
+        .xp-level-group {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .game-symbol {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 5px var(--neon-gold));
+            animation: pulseSymbol 2s infinite ease-in-out;
+        }
+        @keyframes pulseSymbol { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        .xp-text { font-size: 1rem; color: var(--neon-blue); font-weight: 800; letter-spacing: 1px; }
         
         .timer-circle {
             width: 240px; height: 240px; border-radius: 50%;
             border: 4px solid rgba(255,255,255,0.05); 
             display: flex; align-items: center; justify-content: center;
-            margin: 60px auto 30px auto; font-size: 5rem; font-weight: 900;
+            margin: 80px auto 30px auto; font-size: 5rem; font-weight: 900;
             font-variant-numeric: tabular-nums; transition: all 0.5s ease;
         }
 
@@ -151,7 +167,7 @@
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
             font-size: 3rem; font-weight: 900; color: var(--neon-blue);
             text-shadow: 0 0 20px var(--neon-blue);
-            opacity: 0; pointer-events: none;
+            opacity: 0; pointer-events: none; z-index: 60;
         }
         .xp-float.animate { animation: xpUp 1s ease-out forwards; }
         @keyframes xpUp { 0% { opacity: 0; transform: translate(-50%, 0); } 20% { opacity: 1; transform: translate(-50%, -30px); } 100% { opacity: 0; transform: translate(-50%, -80px); } }
@@ -230,7 +246,7 @@
         <div class="level-container">
             <div class="rank-symbol" id="dashSymbol">🌱</div>
             <div class="level-title" id="dashLevelTitle">LEVEL 1</div>
-            <div class="level-sub" id="dashNextLevel">Volgende rank in 3 oefeningen</div>
+            <div class="level-sub" id="dashNextLevel">Train voor je volgende rank</div>
             
             <div style="width: 80%; margin: 0 auto;">
                 <div class="xp-track">
@@ -266,9 +282,12 @@
 
     <div id="playerScreen" class="screen">
         <div class="player-xp-container">
-            <div class="xp-text">
-                <span id="gameLevel">LVL 1</span>
-                <span>XP</span>
+            <div class="xp-header">
+                <div class="xp-level-group">
+                    <span class="game-symbol" id="gameSymbol">🌱</span>
+                    <span class="xp-text" id="gameLevel">LVL 1</span>
+                </div>
+                <span class="xp-text" style="font-size:0.7rem; opacity:0.7;">XP</span>
             </div>
             <div class="xp-track">
                 <div class="xp-fill" id="gameXpBar"></div>
@@ -310,20 +329,22 @@
 <script>
     // --- 100 RANKS SYMBOLS ---
     const RANK_SYMBOLS = [
-        "🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨", // 1-10 (Basic Material)
-        "🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂", // 11-20 (Insects)
-        "🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀", // 21-30 (Small Animals)
-        "🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇", // 31-40 (Birds)
-        "🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍", // 41-50 (Mammals)
-        "🦓","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌", // 51-60 (Farm/Wild)
-        "🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏", // 61-70 (Predators/Giants)
-        "🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐", // 71-80 (Elements/Cosmic)
-        "🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟", // 81-90 (Humanoid/Myth)
-        "🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕", // 91-99 (Leviathans)
-        "👑" // 100 THE KING
+        "🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨", // 1-10
+        "🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂", // 11-20
+        "🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀", // 21-30
+        "🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇", // 31-40
+        "🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍", // 41-50
+        "🦓","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌", // 51-60
+        "🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏", // 61-70
+        "🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐", // 71-80
+        "🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟", // 81-90
+        "🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕", // 91-99
+        "👑" // 100
     ];
 
-    const TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 7; // 168 Total Exercises
+    // --- REKENFORMULE ---
+    // 8 Weken * 3 Dagen * 3 Rondes * 7 Oefeningen = 504 Totaal
+    const TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 3 * 7; 
 
     // --- AUDIO ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -375,7 +396,6 @@
 
     // --- INIT ---
     window.onload = function() {
-        // v4 migration
         let saved = localStorage.getItem('abs_pro_v4');
         if(!saved) {
             // Check v3
@@ -384,7 +404,7 @@
                 const parsed = JSON.parse(saved);
                 state.currentWeek = parsed.currentWeek || 1;
                 state.history = parsed.history || [];
-                // Calculate XP based on history (approx 7 exercises * 3 rounds per history item)
+                // Calculate XP based on history
                 state.totalExercisesDone = state.history.length * (7 * 3);
             }
         } else {
@@ -407,15 +427,13 @@
 
     // --- LEVEL LOGIC ---
     function getLevelInfo() {
-        // Map 168 exercises to 100 levels.
-        let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 3 * 7;
+        let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM) * 100;
         let level = Math.floor(rawLevel) + 1;
         if(level > 100) level = 100;
         
-        let progress = (rawLevel % 1) * 100; // Percentage to next level
+        let progress = (rawLevel % 1) * 100; 
         if(level === 100) progress = 100;
 
-        // Symbol logic
         let symbolIndex = level - 1;
         if(symbolIndex >= RANK_SYMBOLS.length) symbolIndex = RANK_SYMBOLS.length - 1;
         
@@ -432,6 +450,7 @@
         
         // In-game
         document.getElementById('gameLevel').innerText = `LVL ${info.level}`;
+        document.getElementById('gameSymbol').innerText = info.symbol; // UPDATE SYMBOL IN GAME
         document.getElementById('gameXpBar').style.width = `${info.progress}%`;
     }
 
@@ -523,7 +542,7 @@
                 if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(880, 0.1);
                 if(state.timeLeft <= 0) {
                     playBeep(1200, 0.3);
-                    completeStep(); // Give XP and move on
+                    completeStep();
                 }
             }, 1000);
         } else {
@@ -540,15 +559,13 @@
     }
 
     function completeStep() {
-        // XP GAIN
         state.totalExercisesDone++;
-        saveData(); // Save progress immediately
+        saveData();
         
-        // UI Animation
-        updateLevelUI();
+        updateLevelUI(); // Check if level went up!
         const floatEl = document.getElementById('xpFloat');
         floatEl.classList.remove('animate');
-        void floatEl.offsetWidth; // trigger reflow
+        void floatEl.offsetWidth; 
         floatEl.classList.add('animate');
 
         nextStep();
@@ -608,7 +625,6 @@
     }
 
     function closeModal() {
-        // Only log completion of full workout for history week tracking
         state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
         saveData();
         
