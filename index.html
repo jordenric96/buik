@@ -58,7 +58,6 @@
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         h1 { 
             font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: 1px; 
-            /* Dubbele schaduw voor diepte: Blauw + Roos */
             text-shadow: 2px 2px 0px var(--neon-pink), -1px -1px 10px var(--neon-blue);
         }
         
@@ -71,7 +70,7 @@
             width: 44px; height: 44px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; transition: all 0.2s;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); /* Roze gloed */
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); 
         }
         .btn-icon:active { transform: scale(0.92); background: rgba(255,255,255,0.1); }
 
@@ -89,7 +88,6 @@
             overflow: hidden;
         }
         
-        /* Subtiele lijntjes bovenaan de panels */
         .panel-blue::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
         .panel-pink::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
@@ -98,17 +96,21 @@
         .week-title { font-weight: 800; font-size: 1.4rem; text-align: center; }
         .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; text-align: center;}
 
-        /* CHECKBOXES */
-        .tracker-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        /* CHECKBOXES (Dynamisch voor 4e keer) */
+        .tracker-container { 
+            display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            flex-wrap: wrap; /* Zorgt dat het past als je heel veel traint */
+        }
         .check-circle {
-            width: 45px; height: 45px; border-radius: 50%;
+            width: 40px; height: 40px; border-radius: 50%;
             background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
-            color: transparent; font-size: 1.4rem; transition: all 0.4s;
+            color: transparent; font-size: 1.2rem; transition: all 0.4s;
         }
         .check-circle.completed {
             background: var(--neon-green); border: none; color: #000;
-            transform: scale(1.15); box-shadow: 0 0 20px var(--neon-green);
+            transform: scale(1.1); box-shadow: 0 0 20px var(--neon-green);
         }
 
         /* LIJST */
@@ -133,29 +135,23 @@
         }
 
         /* DOTS */
-        .dots-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .progress-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.3s; }
+        .dots-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .progress-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.3s; }
         .progress-dot.active { background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); transform: scale(1.3); }
         .progress-dot.done { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
 
         .player-instruction { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; text-shadow: 0 0 15px currentColor; }
         .player-detail { font-size: 1.2rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 2px;}
 
-        /* --- STATES (Hier zit het ROOS in) --- */
-        
-        /* RUST = NEON ROOS */
+        /* --- STATES --- */
         .state-rest .timer-circle { 
             box-shadow: 0 0 50px var(--neon-pink), inset 0 0 20px var(--neon-pink); 
             color: var(--neon-pink); border-color: var(--neon-pink); 
         }
-        
-        /* WERK = NEON BLAUW */
         .state-work .timer-circle { 
             box-shadow: 0 0 60px var(--neon-blue), inset 0 0 30px var(--neon-blue); 
             color: var(--neon-blue); border-color: var(--neon-blue); 
         }
-        
-        /* REPS = NEON GROEN */
         .state-manual .timer-circle { 
             box-shadow: 0 0 50px var(--neon-green), inset 0 0 20px var(--neon-green); 
             color: var(--neon-green); border-style: dashed; border-color: var(--neon-green); 
@@ -183,7 +179,7 @@
         #modalOverlay.show { display: flex; }
         
         .modal-content {
-            background: #0f0518; /* Donkerpaars/zwart */
+            background: #0f0518;
             border: 2px solid var(--neon-pink);
             padding: 40px; border-radius: 30px; text-align: center;
             max-width: 80%; box-shadow: 0 0 60px var(--neon-pink);
@@ -244,11 +240,8 @@
             </div>
             
             <div class="tracker-container" id="weekTracker">
-                <div class="check-circle"></div>
-                <div class="check-circle"></div>
-                <div class="check-circle"></div>
-            </div>
-            <div style="text-align: center; margin-top: 10px; color: var(--text-mute); font-size: 0.8rem;">DOEL: 3 SESSIES / WEEK</div>
+                </div>
+            <div style="text-align: center; margin-top: 10px; color: var(--text-mute); font-size: 0.8rem;">MINIMAAL 3X PER WEEK</div>
         </div>
 
         <div class="glass-panel panel-blue">
@@ -267,8 +260,7 @@
         </div>
         
         <div style="width: 100%;">
-            <div class="dots-container" id="progressDots">
-                </div>
+            <div class="dots-container" id="progressDots"></div>
 
             <div class="player-instruction" id="exName">Klaarmaken...</div>
             <div class="player-detail" id="exDetail">Start in</div>
@@ -330,21 +322,25 @@
     // --- DATA ---
     const exercises = [
         { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' },
-        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'reps' },
-        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'reps' },
+        { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' }, 
+        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },
+        // NIEUW: Leg Hold (statisch, dus 'time')
+        { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }, 
+        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' },
         { id: 'mountain', name: 'Mountain Climbers', type: 'time', unit: 'sec' },
-        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'reps' }
+        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' }
     ];
 
+    // Progressie (Leg Hold begint op 15 sec, Pushups op 8 reps)
     const weeklyProgression = {
-        1: { plank: 30, bicycle: 20, legraise: 10, mountain: 30, twists: 20 },
-        2: { plank: 35, bicycle: 24, legraise: 12, mountain: 30, twists: 24 },
-        3: { plank: 40, bicycle: 30, legraise: 14, mountain: 35, twists: 30 },
-        4: { plank: 45, bicycle: 36, legraise: 15, mountain: 40, twists: 36 },
-        5: { plank: 50, bicycle: 40, legraise: 15, mountain: 45, twists: 40 },
-        6: { plank: 60, bicycle: 44, legraise: 18, mountain: 50, twists: 44 },
-        7: { plank: 75, bicycle: 50, legraise: 20, mountain: 60, twists: 50 },
-        8: { plank: 90, bicycle: 60, legraise: 20, mountain: 60, twists: 60 }
+        1: { plank: 30, pushup: 8, bicycle: 20, leghold: 15, legraise: 10, mountain: 30, twists: 20 },
+        2: { plank: 35, pushup: 10, bicycle: 24, leghold: 20, legraise: 12, mountain: 30, twists: 24 },
+        3: { plank: 40, pushup: 12, bicycle: 30, leghold: 20, legraise: 14, mountain: 35, twists: 30 },
+        4: { plank: 45, pushup: 15, bicycle: 36, leghold: 25, legraise: 15, mountain: 40, twists: 36 },
+        5: { plank: 50, pushup: 18, bicycle: 40, leghold: 30, legraise: 15, mountain: 45, twists: 40 },
+        6: { plank: 60, pushup: 20, bicycle: 44, leghold: 30, legraise: 18, mountain: 50, twists: 44 },
+        7: { plank: 75, pushup: 22, bicycle: 50, leghold: 40, legraise: 20, mountain: 60, twists: 50 },
+        8: { plank: 90, pushup: 25, bicycle: 60, leghold: 45, legraise: 20, mountain: 60, twists: 60 }
     };
 
     let state = {
@@ -357,6 +353,7 @@
 
     // --- INIT ---
     window.onload = function() {
+        // BELANGRIJK: We gebruiken 'abs_pro_v3' zodat je oude data behouden blijft!
         const saved = localStorage.getItem('abs_pro_v3');
         if(saved) {
             const parsed = JSON.parse(saved);
@@ -384,11 +381,19 @@
             list.innerHTML += `<div class="preview-item"><span>${ex.name}</span><span>${val} ${ex.unit}</span></div>`;
         });
 
+        // Bereken aantal voltooide workouts
         const workoutsThisWeek = state.history.filter(h => h.week === state.currentWeek).length;
         const tracker = document.getElementById('weekTracker');
         tracker.innerHTML = '';
-        for(let i=0; i<3; i++) {
-            tracker.innerHTML += `<div class="check-circle ${i < workoutsThisWeek ? 'completed' : ''}">${i < workoutsThisWeek ? '✓' : ''}</div>`;
+        
+        // LOGICA VOOR 4E KEER (Of vaker)
+        // We tonen altijd minimaal 3 bolletjes. Als je er meer hebt gedaan, tonen we er meer.
+        const dotsToShow = Math.max(3, workoutsThisWeek);
+
+        for(let i=0; i < dotsToShow; i++) {
+            // Als i kleiner is dan het aantal workouts, is deze voltooid
+            const isDone = i < workoutsThisWeek;
+            tracker.innerHTML += `<div class="check-circle ${isDone ? 'completed' : ''}">${isDone ? '✓' : ''}</div>`;
         }
     }
 
@@ -575,8 +580,9 @@
             if(count === 0) continue;
 
             const targets = weeklyProgression[w];
-            let weekSec = (targets.plank * 3 * count) + (targets.mountain * 3 * count);
-            let weekReps = (targets.bicycle * 3 * count) + (targets.legraise * 3 * count) + (targets.twists * 3 * count);
+            // Bereken totalen. Let op: Pushups zijn reps, Plank/Hold/Mountain zijn sec.
+            let weekSec = (targets.plank * 3 * count) + (targets.mountain * 3 * count) + (targets.leghold * 3 * count);
+            let weekReps = (targets.pushup * 3 * count) + (targets.bicycle * 3 * count) + (targets.legraise * 3 * count) + (targets.twists * 3 * count);
 
             grandTotalSec += weekSec;
             grandTotalReps += weekReps;
