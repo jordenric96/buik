@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0a0a14">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Neon Core RPG</title>
+    <title>Neon Core RPG v5</title>
     <style>
         :root {
             /* --- NEON CYBER PALET --- */
@@ -15,7 +15,7 @@
             
             --neon-blue: #00f3ff;   /* XP / Levels */
             --neon-green: #0aff00;  /* Success */
-            --neon-pink: #ff00ff;   /* Accents / Warning */
+            --neon-pink: #ff00ff;   /* Accents / Timer */
             --neon-gold: #ffd700;   /* Rank Symbols */
             
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -55,23 +55,19 @@
             text-shadow: 2px 2px 0px var(--neon-pink), -1px -1px 10px var(--neon-blue);
         }
         
-        /* LEVEL SECTION DASHBOARD */
-        .level-container {
-            margin-bottom: 25px;
-            text-align: center;
-        }
+        /* LEVEL SECTION */
+        .level-container { margin-bottom: 25px; text-align: center; }
         .rank-symbol {
-            font-size: 3.5rem; margin-bottom: 5px;
+            font-size: 3.5rem; margin-bottom: 5px; display: inline-block;
             filter: drop-shadow(0 0 10px var(--neon-gold));
             animation: float 3s ease-in-out infinite;
-            display: inline-block;
         }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         
         .level-title { font-size: 1.2rem; font-weight: bold; color: var(--neon-gold); text-transform: uppercase; letter-spacing: 2px; }
         .level-sub { font-size: 0.9rem; color: var(--text-mute); margin-bottom: 10px; }
 
-        /* XP BAR GLOBAL */
+        /* XP BAR */
         .xp-track {
             width: 100%; height: 12px; background: rgba(255,255,255,0.1);
             border-radius: 10px; overflow: hidden; position: relative;
@@ -79,8 +75,7 @@
         }
         .xp-fill {
             height: 100%; background: var(--neon-blue);
-            width: 0%; /* JS vult dit */
-            box-shadow: 0 0 10px var(--neon-blue);
+            width: 0%; box-shadow: 0 0 10px var(--neon-blue);
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
@@ -97,7 +92,6 @@
             border: var(--glass-border); box-shadow: var(--glass-shadow); border-radius: var(--radius);
             padding: 25px; margin-bottom: 25px; position: relative; overflow: hidden;
         }
-        
         .panel-blue::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
         .panel-pink::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
@@ -105,11 +99,7 @@
         .week-title { font-weight: 800; font-size: 1.4rem; text-align: center; }
         .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; text-align: center;}
 
-        /* CHECKBOXES */
-        .tracker-container { 
-            display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; 
-            border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; 
-        }
+        .tracker-container { display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
         .check-circle {
             width: 40px; height: 40px; border-radius: 50%;
             background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
@@ -132,42 +122,36 @@
             padding-bottom: 20px; z-index: 50;
         }
 
-        /* IN-GAME XP BAR & SYMBOL */
         .player-xp-container {
             position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px; box-sizing: border-box;
-            background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
         }
-        
-        .xp-header {
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-        }
-        .xp-level-group {
-            display: flex; align-items: center; gap: 10px;
-        }
-        .game-symbol {
-            font-size: 2rem;
-            filter: drop-shadow(0 0 5px var(--neon-gold));
-            animation: pulseSymbol 2s infinite ease-in-out;
-        }
+        .xp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .xp-level-group { display: flex; align-items: center; gap: 10px; }
+        .game-symbol { font-size: 2rem; filter: drop-shadow(0 0 5px var(--neon-gold)); animation: pulseSymbol 2s infinite ease-in-out; }
         @keyframes pulseSymbol { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
         .xp-text { font-size: 1rem; color: var(--neon-blue); font-weight: 800; letter-spacing: 1px; }
         
+        /* SESSION TIMER */
+        .session-timer {
+            position: absolute; top: 80px; width: 100%; text-align: center;
+            font-family: monospace; font-size: 1.5rem; font-weight: bold;
+            color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink);
+            letter-spacing: 2px;
+        }
+
         .timer-circle {
             width: 240px; height: 240px; border-radius: 50%;
             border: 4px solid rgba(255,255,255,0.05); 
             display: flex; align-items: center; justify-content: center;
-            margin: 80px auto 30px auto; font-size: 5rem; font-weight: 900;
+            margin: 110px auto 30px auto; font-size: 5rem; font-weight: 900;
             font-variant-numeric: tabular-nums; transition: all 0.5s ease;
         }
 
-        /* XP GAIN POPUP ANIMATION */
         .xp-float {
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
             font-size: 3rem; font-weight: 900; color: var(--neon-blue);
-            text-shadow: 0 0 20px var(--neon-blue);
-            opacity: 0; pointer-events: none; z-index: 60;
+            text-shadow: 0 0 20px var(--neon-blue); opacity: 0; pointer-events: none; z-index: 60;
         }
         .xp-float.animate { animation: xpUp 1s ease-out forwards; }
         @keyframes xpUp { 0% { opacity: 0; transform: translate(-50%, 0); } 20% { opacity: 1; transform: translate(-50%, -30px); } 100% { opacity: 0; transform: translate(-50%, -80px); } }
@@ -186,14 +170,12 @@
             background: linear-gradient(to top, #000 70%, transparent);
             text-align: center; z-index: 100; box-sizing: border-box;
         }
-        
         .big-btn {
             background: var(--neon-blue); color: #000; border: none;
             width: 100%; max-width: 500px; padding: 20px;
             font-size: 1.3rem; font-weight: 900; border-radius: 50px;
             cursor: pointer; box-shadow: 0 0 30px var(--neon-blue);
-            text-transform: uppercase; letter-spacing: 2px;
-            transition: transform 0.1s;
+            text-transform: uppercase; letter-spacing: 2px; transition: transform 0.1s;
         }
         .big-btn:active { transform: scale(0.98); }
         .action-btn { background: var(--neon-green); box-shadow: 0 0 30px var(--neon-green); color: #000; }
@@ -203,7 +185,7 @@
             margin-top: 20px; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* MODAL */
+        /* MODAL & STATS */
         #modalOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
@@ -222,17 +204,14 @@
             text-transform: uppercase;
         }
 
-        /* STATS SCREEN */
         #statsScreen { background: #050505; z-index: 100; }
-        
         .grand-total-box { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--neon-pink);
             padding: 20px; border-radius: var(--radius); margin-bottom: 20px; 
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); color: #fff;
         }
         .stats-detail-row {
-            display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.95rem;
+            display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;
         }
         .stats-detail-row:last-child { border-bottom: none; }
         .stats-detail-row span:last-child { color: var(--neon-blue); font-weight: bold; }
@@ -251,11 +230,8 @@
             <div class="rank-symbol" id="dashSymbol">🌱</div>
             <div class="level-title" id="dashLevelTitle">LEVEL 1</div>
             <div class="level-sub" id="dashNextLevel">Train voor je volgende rank</div>
-            
             <div style="width: 80%; margin: 0 auto;">
-                <div class="xp-track">
-                    <div class="xp-fill" id="dashXpBar"></div>
-                </div>
+                <div class="xp-track"><div class="xp-fill" id="dashXpBar"></div></div>
             </div>
         </div>
 
@@ -268,9 +244,7 @@
                 </div>
                 <button class="btn-icon" onclick="changeWeek(1)">→</button>
             </div>
-            
-            <div class="tracker-container" id="weekTracker">
-                </div>
+            <div class="tracker-container" id="weekTracker"></div>
             <div style="text-align: center; margin-top: 10px; color: var(--text-mute); font-size: 0.8rem;">DOEL: 3 SESSIES / WEEK</div>
         </div>
 
@@ -293,10 +267,10 @@
                 </div>
                 <span class="xp-text" style="font-size:0.7rem; opacity:0.7;">XP</span>
             </div>
-            <div class="xp-track">
-                <div class="xp-fill" id="gameXpBar"></div>
-            </div>
+            <div class="xp-track"><div class="xp-fill" id="gameXpBar"></div></div>
         </div>
+
+        <div class="session-timer" id="sessionTimerDisplay">00:00</div>
 
         <div class="xp-float" id="xpFloat">+XP</div>
 
@@ -333,24 +307,17 @@
 <script>
     // --- 100 RANKS SYMBOLS ---
     const RANK_SYMBOLS = [
-        "🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨", // 1-10
-        "🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂", // 11-20
-        "🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀", // 21-30
-        "🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇", // 31-40
-        "🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍", // 41-50
-        "🦓","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌", // 51-60
-        "🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏", // 61-70
-        "🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐", // 71-80
-        "🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟", // 81-90
-        "🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕", // 91-99
-        "👑" // 100
+        "🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨","🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂", 
+        "🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀","🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇", 
+        "🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍","zebra","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌", 
+        "🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏","🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐", 
+        "🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟","🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕","👑"
     ];
 
-    // --- REKENFORMULE ---
-    // 8 Weken * 3 Dagen * 3 Rondes * 7 Oefeningen = 504 Totaal
-    const TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 3 * 7; 
+    // --- CONFIG: 10 OEFENINGEN ---
+    // 8 Weken * 3 Dagen * 3 Rondes * 10 Oefeningen = 720 Totaal
+    const TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 3 * 10; 
 
-    // --- AUDIO ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq = 440, duration = 0.1, type = 'sine') {
         if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -362,7 +329,6 @@
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    // --- WAKE LOCK ---
     let wakeLock = null;
     async function requestWakeLock() { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {} }
     async function releaseWakeLock() { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } }
@@ -371,27 +337,33 @@
     const exercises = [
         { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' },
         { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' }, 
+        { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // NEW
+        { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // NEW
+        { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // NEW
+        { id: 'stretch', name: 'Hamstring Stretch', type: 'time', unit: 'sec' }, // NEW (Pos 6)
         { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },
         { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }, 
         { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' },
-        { id: 'mountain', name: 'Mountain Climbers', type: 'time', unit: 'sec' },
         { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' }
     ];
 
     const weeklyProgression = {
-        1: { plank: 30, pushup: 8, bicycle: 20, leghold: 15, legraise: 10, mountain: 30, twists: 20 },
-        2: { plank: 35, pushup: 10, bicycle: 24, leghold: 20, legraise: 12, mountain: 30, twists: 24 },
-        3: { plank: 40, pushup: 12, bicycle: 30, leghold: 20, legraise: 14, mountain: 35, twists: 30 },
-        4: { plank: 45, pushup: 15, bicycle: 36, leghold: 25, legraise: 15, mountain: 40, twists: 36 },
-        5: { plank: 50, pushup: 18, bicycle: 40, leghold: 30, legraise: 15, mountain: 45, twists: 40 },
-        6: { plank: 60, pushup: 20, bicycle: 44, leghold: 30, legraise: 18, mountain: 50, twists: 44 },
-        7: { plank: 75, pushup: 22, bicycle: 50, leghold: 40, legraise: 20, mountain: 60, twists: 50 },
-        8: { plank: 90, pushup: 25, bicycle: 60, leghold: 45, legraise: 20, mountain: 60, twists: 60 }
+        1: { plank: 30, pushup: 8, row_r:10, row_l:10, dips:8, stretch:30, bicycle: 20, leghold: 15, legraise: 10, twists: 20 },
+        2: { plank: 35, pushup: 10, row_r:12, row_l:12, dips:10, stretch:30, bicycle: 24, leghold: 20, legraise: 12, twists: 24 },
+        3: { plank: 40, pushup: 12, row_r:12, row_l:12, dips:12, stretch:35, bicycle: 30, leghold: 20, legraise: 14, twists: 30 },
+        4: { plank: 45, pushup: 15, row_r:15, row_l:15, dips:15, stretch:35, bicycle: 36, leghold: 25, legraise: 15, twists: 36 },
+        5: { plank: 50, pushup: 18, row_r:15, row_l:15, dips:15, stretch:40, bicycle: 40, leghold: 30, legraise: 15, twists: 40 },
+        6: { plank: 60, pushup: 20, row_r:18, row_l:18, dips:18, stretch:40, bicycle: 44, leghold: 30, legraise: 18, twists: 44 },
+        7: { plank: 75, pushup: 22, row_r:20, row_l:20, dips:20, stretch:45, bicycle: 50, leghold: 40, legraise: 20, twists: 50 },
+        8: { plank: 90, pushup: 25, row_r:20, row_l:20, dips:25, stretch:45, bicycle: 60, leghold: 45, legraise: 20, twists: 60 }
     };
 
     let state = {
         currentWeek: 1, history: [], totalExercisesDone: 0,
-        isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, timerInterval: null
+        isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, 
+        timerInterval: null,
+        // Session Timer
+        sessionStartTime: 0, sessionInterval: null, sessionDuration: 0
     };
 
     const TOTAL_ROUNDS = 3;
@@ -401,15 +373,7 @@
     // --- INIT ---
     window.onload = function() {
         let saved = localStorage.getItem('abs_pro_v4');
-        if(!saved) {
-            saved = localStorage.getItem('abs_pro_v3');
-            if(saved) {
-                const parsed = JSON.parse(saved);
-                state.currentWeek = parsed.currentWeek || 1;
-                state.history = parsed.history || [];
-                state.totalExercisesDone = state.history.length * (7 * 3);
-            }
-        } else {
+        if(saved) {
             const parsed = JSON.parse(saved);
             state.currentWeek = parsed.currentWeek || 1;
             state.history = parsed.history || [];
@@ -432,13 +396,10 @@
         let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM) * 100;
         let level = Math.floor(rawLevel) + 1;
         if(level > 100) level = 100;
-        
         let progress = (rawLevel % 1) * 100; 
         if(level === 100) progress = 100;
-
         let symbolIndex = level - 1;
         if(symbolIndex >= RANK_SYMBOLS.length) symbolIndex = RANK_SYMBOLS.length - 1;
-        
         return { level, progress, symbol: RANK_SYMBOLS[symbolIndex] };
     }
 
@@ -455,7 +416,6 @@
     // --- DASHBOARD ---
     function renderDashboard() {
         document.getElementById('weekDisplay').innerText = `Week ${state.currentWeek}`;
-        
         const targets = weeklyProgression[state.currentWeek];
         const list = document.getElementById('previewList');
         list.innerHTML = '';
@@ -468,7 +428,6 @@
         const tracker = document.getElementById('weekTracker');
         tracker.innerHTML = '';
         const dotsToShow = Math.max(3, workoutsThisWeek);
-
         for(let i=0; i < dotsToShow; i++) {
             const isDone = i < workoutsThisWeek;
             tracker.innerHTML += `<div class="check-circle ${isDone ? 'completed' : ''}">${isDone ? '✓' : ''}</div>`;
@@ -489,9 +448,25 @@
         state.isActive = true; state.round = 1; state.exIndex = 0;
         updateLevelUI(); 
         
+        // Start Session Timer
+        state.sessionStartTime = Date.now();
+        state.sessionDuration = 0;
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
+        state.sessionInterval = setInterval(updateSessionTimer, 1000);
+
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('playerScreen').classList.add('active');
         startPrep();
+    }
+
+    function updateSessionTimer() {
+        const now = Date.now();
+        const diff = Math.floor((now - state.sessionStartTime) / 1000);
+        state.sessionDuration = diff;
+        
+        const m = Math.floor(diff / 60).toString().padStart(2, '0');
+        const s = (diff % 60).toString().padStart(2, '0');
+        document.getElementById('sessionTimerDisplay').innerText = `${m}:${s}`;
     }
 
     function startPrep() {
@@ -559,19 +534,16 @@
     function completeStep() {
         state.totalExercisesDone++;
         saveData();
-        
         updateLevelUI(); 
         const floatEl = document.getElementById('xpFloat');
         floatEl.classList.remove('animate');
         void floatEl.offsetWidth; 
         floatEl.classList.add('animate');
-
         nextStep();
     }
 
     function nextStep() {
         if(state.timerInterval) clearInterval(state.timerInterval);
-        
         if (state.exIndex < exercises.length - 1) {
             state.exIndex++;
             startPrep();
@@ -589,7 +561,6 @@
     function startRoundRest() {
         state.timeLeft = ROUND_REST;
         state.phase = 'prep'; 
-        
         document.getElementById('playerScreen').className = 'screen active state-rest';
         document.getElementById('exName').innerText = "GROTE PAUZE";
         document.getElementById('exDetail').innerText = "Even op adem komen...";
@@ -608,17 +579,21 @@
     }
 
     function quitWorkout() {
-        // Soft Quit: Laat zien wat je hebt bereikt
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
         openModal("TRAINING GESTOPT", "XP is opgeslagen. Sessie telt niet voor weekdoel.", false);
     }
 
     function finishWorkout(success) {
         if(state.timerInterval) clearInterval(state.timerInterval);
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
         releaseWakeLock();
         
         if(success) {
-            // Hard Finish: Weekdoel behaald
-            state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
+            state.history.push({ 
+                date: new Date().toISOString(), 
+                week: state.currentWeek,
+                duration: state.sessionDuration 
+            });
             saveData();
             openModal("TRAINING COMPLEET!", "XP & Sessie Opgeslagen!", true);
         }
@@ -654,17 +629,26 @@
         const container = document.getElementById('statsContent');
         container.innerHTML = '';
         
-        // Data Structures
-        let grandTotal = {}; // { plank: 300, pushup: 50... }
+        let grandTotal = {}; 
         exercises.forEach(ex => grandTotal[ex.id] = 0);
+        
+        let totalSecondsTrained = 0;
 
         // Build stats
         for(let w=1; w<=8; w++) {
-            const count = state.history.filter(h => h.week === w).length;
+            // Find workouts for this week
+            const workouts = state.history.filter(h => h.week === w);
+            const count = workouts.length;
+            
             if(count === 0) continue;
 
             const targets = weeklyProgression[w];
             
+            // Calc durations
+            workouts.forEach(w => {
+                if(w.duration) totalSecondsTrained += w.duration;
+            });
+
             // Generate Week Card
             let weekHtml = `
                 <div class="glass-panel panel-blue">
@@ -673,7 +657,7 @@
             `;
 
             exercises.forEach(ex => {
-                const totalForEx = targets[ex.id] * 3 * count; // 3 rounds * count sessions
+                const totalForEx = targets[ex.id] * 3 * count; 
                 grandTotal[ex.id] += totalForEx;
                 
                 weekHtml += `
@@ -685,13 +669,21 @@
             });
             
             weekHtml += `</div></div>`;
-            container.innerHTML += weekHtml; // Add week card to bottom
+            container.innerHTML += weekHtml; 
         }
 
-        // Generate Grand Total Header (Top of list)
+        // TIME FORMATTING
+        let hours = Math.floor(totalSecondsTrained / 3600);
+        let mins = Math.floor((totalSecondsTrained % 3600) / 60);
+        let timeString = hours > 0 ? `${hours}u ${mins}m` : `${mins} min`;
+
+        // GRAND TOTAL HEADER
         let grandTotalHtml = `
             <div class="grand-total-box">
-                <h2 style="margin:0 0 15px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
+                <h2 style="margin:0 0 5px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
+                <div style="text-align:center; margin-bottom:15px; color:var(--neon-blue); font-size:1.5rem; font-weight:bold;">
+                    ⏱️ ${timeString}
+                </div>
         `;
         
         exercises.forEach(ex => {
@@ -704,7 +696,6 @@
         });
         grandTotalHtml += `</div>`;
 
-        // Prepend grand total
         container.innerHTML = grandTotalHtml + container.innerHTML;
 
         if(state.history.length === 0) container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-mute);">Nog geen data.</div>';
