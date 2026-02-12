@@ -15,7 +15,7 @@
             
             --neon-blue: #00f3ff;   /* XP / Levels */
             --neon-green: #0aff00;  /* Success */
-            --neon-pink: #ff00ff;   /* Accents */
+            --neon-pink: #ff00ff;   /* Accents / Warning */
             --neon-gold: #ffd700;   /* Rank Symbols */
             
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -230,19 +230,12 @@
             padding: 20px; border-radius: var(--radius); margin-bottom: 20px; 
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); color: #fff;
         }
-
-        /* Nieuwe stats styling */
         .stats-detail-row {
             display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
             font-size: 0.95rem;
         }
         .stats-detail-row:last-child { border-bottom: none; }
         .stats-detail-row span:last-child { color: var(--neon-blue); font-weight: bold; }
-        
-        .stats-section-title {
-            color: var(--neon-gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-            margin-bottom: 10px; display: block; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 5px;
-        }
 
     </style>
 </head>
@@ -330,9 +323,9 @@
 
     <div id="modalOverlay">
         <div class="modal-content">
-            <div style="font-size: 4rem; margin-bottom: 10px;">🏆</div>
-            <h2 style="font-size: 2rem; margin: 0; color: #fff; text-shadow: 0 0 10px var(--neon-green);">TRAINING COMPLEET!</h2>
-            <p style="color: var(--text-mute); font-size: 1.2rem; margin-top:10px;">XP opgeslagen.</p>
+            <div style="font-size: 4rem; margin-bottom: 10px;" id="modalIcon">🏆</div>
+            <h2 style="font-size: 2rem; margin: 0; color: #fff; text-shadow: 0 0 10px var(--neon-green);" id="modalTitle">TRAINING COMPLEET!</h2>
+            <p style="color: var(--text-mute); font-size: 1.2rem; margin-top:10px;" id="modalText">XP opgeslagen.</p>
             <button class="close-modal-btn" onclick="closeModal()">SLUITEN</button>
         </div>
     </div>
@@ -409,7 +402,6 @@
     window.onload = function() {
         let saved = localStorage.getItem('abs_pro_v4');
         if(!saved) {
-            // Check v3
             saved = localStorage.getItem('abs_pro_v3');
             if(saved) {
                 const parsed = JSON.parse(saved);
@@ -452,11 +444,9 @@
 
     function updateLevelUI() {
         const info = getLevelInfo();
-        // Dashboard
         document.getElementById('dashSymbol').innerText = info.symbol;
         document.getElementById('dashLevelTitle').innerText = `LEVEL ${info.level}`;
         document.getElementById('dashXpBar').style.width = `${info.progress}%`;
-        // In-game
         document.getElementById('gameLevel').innerText = `LVL ${info.level}`;
         document.getElementById('gameSymbol').innerText = info.symbol; 
         document.getElementById('gameXpBar').style.width = `${info.progress}%`;
@@ -591,7 +581,7 @@
                 state.exIndex = 0;
                 startRoundRest();
             } else {
-                finishWorkout();
+                finishWorkout(true);
             }
         }
     }
@@ -618,24 +608,31 @@
     }
 
     function quitWorkout() {
-        if(confirm("Stoppen?")) {
-            if(state.timerInterval) clearInterval(state.timerInterval);
-            releaseWakeLock();
-            document.getElementById('playerScreen').classList.remove('active');
-            document.getElementById('dashboardScreen').classList.add('active');
+        // Soft Quit: Laat zien wat je hebt bereikt
+        openModal("TRAINING GESTOPT", "XP is opgeslagen. Sessie telt niet voor weekdoel.", false);
+    }
+
+    function finishWorkout(success) {
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        releaseWakeLock();
+        
+        if(success) {
+            // Hard Finish: Weekdoel behaald
+            state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
+            saveData();
+            openModal("TRAINING COMPLEET!", "XP & Sessie Opgeslagen!", true);
         }
     }
 
-    function finishWorkout() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        releaseWakeLock();
+    function openModal(title, text, isSuccess) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalTitle').style.textShadow = isSuccess ? '0 0 10px var(--neon-green)' : '0 0 10px var(--neon-pink)';
+        document.getElementById('modalIcon').innerText = isSuccess ? '🏆' : '💾';
+        document.getElementById('modalText').innerText = text;
         document.getElementById('modalOverlay').classList.add('show');
     }
 
     function closeModal() {
-        state.history.push({ date: new Date().toISOString(), week: state.currentWeek });
-        saveData();
-        
         document.getElementById('modalOverlay').classList.remove('show');
         document.getElementById('playerScreen').classList.remove('active');
         document.getElementById('dashboardScreen').classList.add('active');
