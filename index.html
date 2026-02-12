@@ -383,4 +383,316 @@
         renderDashboard();
     };
 
-   
+    function saveData() {
+        localStorage.setItem('abs_pro_v4', JSON.stringify({
+            currentWeek: state.currentWeek, 
+            history: state.history,
+            totalExercisesDone: state.totalExercisesDone
+        }));
+    }
+
+    // --- LEVEL LOGIC ---
+    function getLevelInfo() {
+        let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM) * 100;
+        let level = Math.floor(rawLevel) + 1;
+        if(level > 100) level = 100;
+        let progress = (rawLevel % 1) * 100; 
+        if(level === 100) progress = 100;
+        let symbolIndex = level - 1;
+        if(symbolIndex >= RANK_SYMBOLS.length) symbolIndex = RANK_SYMBOLS.length - 1;
+        return { level, progress, symbol: RANK_SYMBOLS[symbolIndex] };
+    }
+
+    function updateLevelUI() {
+        const info = getLevelInfo();
+        document.getElementById('dashSymbol').innerText = info.symbol;
+        document.getElementById('dashLevelTitle').innerText = `LEVEL ${info.level}`;
+        document.getElementById('dashXpBar').style.width = `${info.progress}%`;
+        document.getElementById('gameLevel').innerText = `LVL ${info.level}`;
+        document.getElementById('gameSymbol').innerText = info.symbol; 
+        document.getElementById('gameXpBar').style.width = `${info.progress}%`;
+    }
+
+    // --- DASHBOARD ---
+    function renderDashboard() {
+        document.getElementById('weekDisplay').innerText = `Week ${state.currentWeek}`;
+        const targets = weeklyProgression[state.currentWeek];
+        const list = document.getElementById('previewList');
+        list.innerHTML = '';
+        exercises.forEach(ex => {
+            const val = targets[ex.id];
+            list.innerHTML += `<div class="preview-item"><span>${ex.name}</span><span>${val} ${ex.unit}</span></div>`;
+        });
+
+        const workoutsThisWeek = state.history.filter(h => h.week === state.currentWeek).length;
+        const tracker = document.getElementById('weekTracker');
+        tracker.innerHTML = '';
+        const dotsToShow = Math.max(3, workoutsThisWeek);
+        for(let i=0; i < dotsToShow; i++) {
+            const isDone = i < workoutsThisWeek;
+            tracker.innerHTML += `<div class="check-circle ${isDone ? 'completed' : ''}">${isDone ? '✓' : ''}</div>`;
+        }
+    }
+
+    function changeWeek(dir) {
+        if((state.currentWeek === 1 && dir === -1) || (state.currentWeek === 8 && dir === 1)) return;
+        state.currentWeek += dir;
+        renderDashboard();
+    }
+
+    // --- PLAYER LOGIC ---
+    function startWorkout() {
+        requestWakeLock();
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+
+        state.isActive = true; state.round = 1; state.exIndex = 0;
+        updateLevelUI(); 
+        
+        state.sessionStartTime = Date.now();
+        state.sessionDuration = 0;
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
+        state.sessionInterval = setInterval(updateSessionTimer, 1000);
+
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('playerScreen').classList.add('active');
+        startPrep();
+    }
+
+    function updateSessionTimer() {
+        const now = Date.now();
+        const diff = Math.floor((now - state.sessionStartTime) / 1000);
+        state.sessionDuration = diff;
+        
+        const m = Math.floor(diff / 60).toString().padStart(2, '0');
+        const s = (diff % 60).toString().padStart(2, '0');
+        document.getElementById('sessionTimerDisplay').innerText = `${m}:${s}`;
+    }
+
+    function startPrep() {
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        state.phase = 'prep';
+        state.timeLeft = PREP_TIME;
+        
+        const currentEx = exercises[state.exIndex];
+        
+        document.getElementById('playerScreen').className = 'screen active state-rest';
+        document.getElementById('roundDisplay').innerText = `Ronde ${state.round} / ${TOTAL_ROUNDS}`;
+        document.getElementById('exName').innerText = "RUST / WISSEL";
+        document.getElementById('exDetail').innerText = "Volgende: " + currentEx.name;
+        document.getElementById('actionBtn').style.display = 'none';
+        
+        updateTimerDisplay();
+
+        state.timerInterval = setInterval(() => {
+            state.timeLeft--;
+            updateTimerDisplay();
+            if(state.timeLeft > 0 && state.timeLeft <= 3) playBeep(600, 0.05);
+            if(state.timeLeft <= 0) startExercise();
+        }, 1000);
+    }
+
+    function startExercise() {
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        const currentEx = exercises[state.exIndex];
+        const targets = weeklyProgression[state.currentWeek];
+        const targetVal = targets[currentEx.id];
+
+        document.getElementById('exName').innerText = currentEx.name;
+        
+        if (currentEx.type === 'time') {
+            state.phase = 'work';
+            state.timeLeft = targetVal;
+            document.getElementById('playerScreen').className = 'screen active state-work';
+            document.getElementById('exDetail').innerText = "HOU VOL!";
+            document.getElementById('actionBtn').style.display = 'none';
+            
+            updateTimerDisplay();
+            
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                updateTimerDisplay();
+                if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(880, 0.1);
+                if(state.timeLeft <= 0) {
+                    playBeep(1200, 0.3);
+                    completeStep();
+                }
+            }, 1000);
+        } else {
+            state.phase = 'manual';
+            document.getElementById('playerScreen').className = 'screen active state-manual';
+            document.getElementById('exDetail').innerText = `Doe ${targetVal} herhalingen`;
+            document.getElementById('timerDisplay').innerText = targetVal;
+            document.getElementById('actionBtn').style.display = 'block';
+        }
+    }
+
+    function handleAction() {
+        if(state.phase === 'manual') completeStep();
+    }
+
+    function completeStep() {
+        state.totalExercisesDone++;
+        saveData();
+        updateLevelUI(); 
+        const floatEl = document.getElementById('xpFloat');
+        floatEl.classList.remove('animate');
+        void floatEl.offsetWidth; 
+        floatEl.classList.add('animate');
+        nextStep();
+    }
+
+    function nextStep() {
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        if (state.exIndex < exercises.length - 1) {
+            state.exIndex++;
+            startPrep();
+        } else {
+            if (state.round < TOTAL_ROUNDS) {
+                state.round++;
+                state.exIndex = 0;
+                startRoundRest();
+            } else {
+                finishWorkout(true);
+            }
+        }
+    }
+
+    function startRoundRest() {
+        state.timeLeft = ROUND_REST;
+        state.phase = 'prep'; 
+        document.getElementById('playerScreen').className = 'screen active state-rest';
+        document.getElementById('exName').innerText = "GROTE PAUZE";
+        document.getElementById('exDetail').innerText = "Even op adem komen...";
+        document.getElementById('actionBtn').style.display = 'none';
+
+        state.timerInterval = setInterval(() => {
+            state.timeLeft--;
+            updateTimerDisplay();
+            if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(600, 0.05);
+            if(state.timeLeft <= 0) startExercise();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        document.getElementById('timerDisplay').innerText = state.timeLeft;
+    }
+
+    function quitWorkout() {
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
+        openModal("TRAINING GESTOPT", "XP is opgeslagen. Sessie telt niet voor weekdoel.", false);
+    }
+
+    function finishWorkout(success) {
+        if(state.timerInterval) clearInterval(state.timerInterval);
+        if(state.sessionInterval) clearInterval(state.sessionInterval);
+        releaseWakeLock();
+        
+        if(success) {
+            state.history.push({ 
+                date: new Date().toISOString(), 
+                week: state.currentWeek,
+                duration: state.sessionDuration 
+            });
+            saveData();
+            openModal("TRAINING COMPLEET!", "XP & Sessie Opgeslagen!", true);
+        }
+    }
+
+    function openModal(title, text, isSuccess) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalTitle').style.textShadow = isSuccess ? '0 0 10px var(--neon-green)' : '0 0 10px var(--neon-pink)';
+        document.getElementById('modalIcon').innerText = isSuccess ? '🏆' : '💾';
+        document.getElementById('modalText').innerText = text;
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+        document.getElementById('playerScreen').classList.remove('active');
+        document.getElementById('dashboardScreen').classList.add('active');
+        renderDashboard();
+    }
+
+    // --- STATS CALCULATION ---
+    function showStats() {
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('statsScreen').classList.add('active');
+        calculateStats();
+    }
+    function closeStats() {
+        document.getElementById('statsScreen').classList.remove('active');
+        document.getElementById('dashboardScreen').classList.add('active');
+    }
+
+    function calculateStats() {
+        const container = document.getElementById('statsContent');
+        container.innerHTML = '';
+        
+        let grandTotal = {}; 
+        exercises.forEach(ex => grandTotal[ex.id] = 0);
+        
+        let totalSecondsTrained = 0;
+
+        // Build stats
+        for(let w=1; w<=8; w++) {
+            const workouts = state.history.filter(h => h.week === w);
+            const count = workouts.length;
+            if(count === 0) continue;
+
+            const targets = weeklyProgression[w];
+            
+            workouts.forEach(w => {
+                if(w.duration) totalSecondsTrained += w.duration;
+            });
+
+            let weekHtml = `
+                <div class="glass-panel panel-blue">
+                    <h3 style="margin:0; color:#fff;">Week ${w} <span style="font-size:0.8rem; color:var(--text-mute)">(${count} trainingen)</span></h3>
+                    <div style="margin-top:10px;">
+            `;
+
+            exercises.forEach(ex => {
+                const totalForEx = targets[ex.id] * 3 * count; 
+                grandTotal[ex.id] += totalForEx;
+                
+                weekHtml += `
+                    <div class="stats-detail-row">
+                        <span>${ex.name}</span>
+                        <span>${totalForEx} ${ex.unit}</span>
+                    </div>
+                `;
+            });
+            
+            weekHtml += `</div></div>`;
+            container.innerHTML += weekHtml; 
+        }
+
+        let hours = Math.floor(totalSecondsTrained / 3600);
+        let mins = Math.floor((totalSecondsTrained % 3600) / 60);
+        let timeString = hours > 0 ? `${hours}u ${mins}m` : `${mins} min`;
+
+        let grandTotalHtml = `
+            <div class="grand-total-box">
+                <h2 style="margin:0 0 5px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
+                <div style="text-align:center; margin-bottom:15px; color:var(--neon-blue); font-size:1.5rem; font-weight:bold;">
+                    ⏱️ ${timeString}
+                </div>
+        `;
+        
+        exercises.forEach(ex => {
+            grandTotalHtml += `
+                <div class="stats-detail-row">
+                    <span>${ex.name}</span>
+                    <span style="font-size:1.1rem; color:var(--neon-gold);">${grandTotal[ex.id]} ${ex.unit}</span>
+                </div>
+            `;
+        });
+        grandTotalHtml += `</div>`;
+
+        container.innerHTML = grandTotalHtml + container.innerHTML;
+
+        if(state.history.length === 0) container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-mute);">Nog geen data.</div>';
+    }
+</script>
+</body>
+</html>
