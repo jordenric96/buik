@@ -4,67 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Core Trainer Pro V2</title>
-    <style>
-        :root {
-            --primary: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --light: #f1f5f9;
-            --white: #ffffff;
-            --radius: 16px;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            margin: 0;
-            padding: 0;
-            /* Scroll probleem opgelost: */
-            min-height: 100vh;
-            overflow-x: hidden; 
-            overflow-y: auto; 
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* --- SCREENS --- */
-        .screen {
-            display: none;
-            flex-direction: column;
-            min-height: 100vh;
-            padding: 20px;
-            padding-bottom: 120px; /* Ruimte voor de knop onderaan */
-            box-sizing: border-box;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* --- DASHBOARD --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 1.5rem; margin: 0; }
-        
-        .btn-icon {
-            background: var(--white);
-            border: 1px solid #cbd5e1;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: transform 0.1s;
-        }
+            }
         .btn-icon:active { transform: scale(0.95); }
 
         /* WEEK SELECTOR */
@@ -158,75 +98,314 @@
             font-size: 1.2rem;
             font-weight: 700;
             border-radius: var(--radius);
-            cursor: pointer;
-            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
-            transition: transform 0.1s;
-        }
-        .big-start-btn:active { transform: scale(0.98); }
 
-        /* --- PLAYER --- */
-        #playerScreen {
-            background: var(--dark);
-            color: white;
-            text-align: center;
-            justify-content: center; /* Center verticaal */
-            align-items: center;
-            padding-bottom: 20px;
-        }
-
-        .timer-circle {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            border: 8px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 30px auto;
-            font-size: 4rem;
-            font-weight: 900;
-            font-variant-numeric: tabular-nums;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
-            transition: border-color 0.3s;
-        }
-
-        .player-instruction { font-size: 1.6rem; font-weight: bold; margin-bottom: 5px; }
-        .player-detail { font-size: 1.1rem; color: #94a3b8; }
+<style>
+    :root {
+        /* Nieuwe Cyber Palet */
+        --bg-grad: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        --primary-grad: linear-gradient(to right, #00c6ff, #0072ff);
+        --success-grad: linear-gradient(to right, #11998e, #38ef7d);
+        --warning-grad: linear-gradient(to right, #ff416c, #ff4b2b);
         
-        .action-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 80%;
-            max-width: 300px;
-            font-weight: bold;
-        }
+        /* Glassmorphism variabelen */
+        --glass-bg: rgba(255, 255, 255, 0.08);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.15);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        --blur: blur(12px);
+
+        --text: #ffffff;
+        --text-mute: #aab2c8;
+        --radius: 20px;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        /* Vaste achtergrond voor het glass-effect */
+        background: var(--bg-grad);
+        background-attachment: fixed; 
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Globale Glass Utility Class */
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        border-radius: var(--radius);
+    }
+
+    /* --- SCREENS --- */
+    .screen {
+        display: none;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 20px;
+        padding-bottom: 140px; /* Iets meer ruimte voor de glow knop */
+        box-sizing: border-box;
+    }
+
+    .screen.active { display: flex; }
+
+    /* --- DASHBOARD --- */
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: 1px; }
+    
+    /* Glass Buttons */
+    .btn-icon {
+        background: rgba(255, 255, 255, 0.1);
+        border: var(--glass-border);
+        backdrop-filter: var(--blur);
+        color: var(--text);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.2s;
+    }
+    .btn-icon:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
+
+    /* WEEK SELECTOR CARD */
+    .week-card {
+        /* Pas de glass stijl toe */
+        background: var(--glass-bg);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        border-radius: var(--radius);
         
-        .stop-btn {
-            background: transparent;
-            color: #ef4444;
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 10px;
-        }
+        padding: 25px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
 
-        /* States Colors */
-        .state-rest .timer-circle { border-color: var(--warning); color: var(--warning); }
-        .state-work .timer-circle { border-color: var(--success); color: var(--success); }
-        .state-manual .timer-circle { border-color: var(--primary); color: white; border-style: dashed; }
+    .week-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .week-title { font-weight: 800; font-size: 1.4rem; }
+    .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;}
 
-        /* --- STATS OVERLAY --- */
-        #statsScreen { background: var(--white); z-index: 200; }
-        .chart-bar { background: #e2e8f0; height: 12px; border-radius: 6px; margin-top: 5px; overflow: hidden; }
-        .chart-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1s ease; }
+    /* CHECKBOX VISUALIZER (Neon style) */
+    .tracker-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .check-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: transparent; /* Verberg vinkje indien leeg */
+        font-size: 1.4rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .check-circle.completed {
+        background: var(--success-grad);
+        border: none;
+        color: #fff; /* Toon vinkje */
+        transform: scale(1.15);
+        box-shadow: 0 0 25px #38ef7d; /* Neon Glow */
+    }
+    .check-label {
+        font-size: 0.75rem;
+        color: var(--text-mute);
+        margin-bottom: 5px;
+        display: block;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
 
-    </style>
+    /* PREVIEW BOX */
+    .preview-box {
+        /* Glass style */
+        background: var(--glass-bg);
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        border-radius: var(--radius);
+
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    .preview-box h3 {
+        margin-top: 0; font-size: 1.1rem; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); 
+        padding-bottom: 15px;
+        color: var(--text-mute);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-size: 1.1rem;
+    }
+    .preview-item:last-child { border-bottom: none; }
+    .preview-item span:last-child {
+        color: #00c6ff; /* Cyaan kleur voor de aantallen */
+        font-weight: 800;
+        text-shadow: 0 0 10px rgba(0, 198, 255, 0.4);
+    }
+    
+    /* FLOATING START BUTTON */
+    .bottom-action-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 25px;
+        /* Donkere fade-out onderaan */
+        background: linear-gradient(to top, #0f0c29 70%, rgba(15, 12, 41, 0));
+        box-sizing: border-box;
+        text-align: center;
+        z-index: 100;
+    }
+
+    .big-start-btn {
+        background: var(--primary-grad);
+        color: white;
+        border: none;
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        border-radius: 50px; /* Pill shape */
+        cursor: pointer;
+        box-shadow: 0 0 30px rgba(0, 198, 255, 0.5); /* Blue Glow */
+        transition: transform 0.2s;
+        letter-spacing: 1px;
+    }
+    .big-start-btn:active { transform: scale(0.98); }
+
+    /* --- PLAYER --- */
+    #playerScreen {
+        /* Donkere overlay over de main background */
+        background: rgba(15, 12, 41, 0.85);
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 20px;
+    }
+
+    #roundDisplay {
+        font-weight: 700; letter-spacing: 1px;
+        background: rgba(255,255,255,0.1) !important; /* Override inline style */
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .timer-circle {
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        /* Standaard border weg, we gebruiken shadow voor glow */
+        border: 4px solid rgba(255,255,255,0.1); 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 40px auto;
+        font-size: 5rem;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+        transition: all 0.5s ease;
+        text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    .player-instruction { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; }
+    .player-detail { font-size: 1.2rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 2px;}
+    
+    .action-btn {
+        background: var(--success-grad);
+        color: white;
+        border: none;
+        padding: 22px 40px;
+        font-size: 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        width: 80%;
+        max-width: 320px;
+        font-weight: 800;
+        box-shadow: 0 0 30px rgba(56, 239, 125, 0.5); /* Green Glow */
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .stop-btn {
+        background: transparent;
+        color: var(--text-mute);
+        border: none;
+        margin-top: 25px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    .stop-btn:hover { color: #ff416c; }
+
+    /* States Colors & Glows */
+    /* REST (Oranje/Roze) */
+    .state-rest .timer-circle { 
+        box-shadow: 0 0 50px rgba(255, 75, 43, 0.6), inset 0 0 20px rgba(255, 75, 43, 0.2);
+        color: #ff4b2b;
+        border-color: #ff4b2b;
+    }
+    /* WORK (Groen/Teal) */
+    .state-work .timer-circle { 
+        box-shadow: 0 0 60px rgba(56, 239, 125, 0.7), inset 0 0 20px rgba(56, 239, 125, 0.3);
+        color: #38ef7d;
+        border-color: #38ef7d;
+    }
+    /* MANUAL (Blauw/Cyaan) */
+    .state-manual .timer-circle { 
+        box-shadow: 0 0 50px rgba(0, 198, 255, 0.6), inset 0 0 20px rgba(0, 198, 255, 0.2);
+        color: #00c6ff;
+        border-style: dashed;
+        border-color: #00c6ff;
+    }
+
+    /* --- STATS OVERLAY --- */
+    #statsScreen { 
+        background: rgba(15, 12, 41, 0.95); /* Donkere glass overlay */
+        backdrop-filter: blur(15px);
+        z-index: 200; 
+    }
+    .chart-bar { background: rgba(255,255,255,0.1); height: 14px; border-radius: 7px; margin-top: 8px; overflow: hidden; }
+    .chart-fill { height: 100%; background: var(--primary-grad); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,198,255,0.5); }
+</style>
+    
 </head>
 <body>
 
