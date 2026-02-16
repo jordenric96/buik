@@ -6,15 +6,21 @@
     <meta name="theme-color" content="#0a0a14">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Neon Core HARD MODE</title>
+    <title>Neon Hard Mode</title>
     <style>
         :root {
-            /* --- NEON CYBER PALET --- */
+            /* --- NEON HARD MODE PALET (Iets roder/agressiever) --- */
             --bg-dark: #050505;
-            --bg-grad: linear-gradient(135deg, #050505, #120012, #001212); 
-            --neon-blue: #00f3ff; --neon-green: #0aff00; --neon-pink: #ff00ff; --neon-gold: #ffd700;
-            --glass-bg: rgba(255, 255, 255, 0.03); --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-            --radius: 24px; --text: #ffffff; --text-mute: #8b9bb4;
+            --bg-grad: linear-gradient(135deg, #050000, #120000, #0a0a14); 
+            
+            --neon-blue: #00f3ff;   /* XP */
+            --neon-green: #0aff00;  /* Success */
+            --neon-pink: #ff0055;   /* Accents (Rodere tint voor Hard Mode) */
+            --neon-gold: #ffd700;   /* Ranks */
+            
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --radius: 24px; --text: #ffffff; --text-mute: #999;
         }
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -98,7 +104,7 @@
         <div class="level-container">
             <div class="rank-symbol" id="dashSymbol">🌱</div>
             <div class="level-title" id="dashLevelTitle">LEVEL 1</div>
-            <div class="level-sub" id="dashNextLevel">Hard Mode Activated</div>
+            <div class="level-sub" id="dashNextLevel">Hard Mode Geactiveerd</div>
             <div style="width: 80%; margin: 0 auto;">
                 <div class="xp-track"><div class="xp-fill" id="dashXpBar"></div></div>
             </div>
@@ -202,30 +208,30 @@
         { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // 3
         { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // 4
         { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // 5
-        { id: 'squats', name: 'Goblet Squats', type: 'reps', unit: 'x' },  // 6 (NAAM AANGEPAST VOOR HALTER)
+        { id: 'squats', name: 'Goblet Squats', type: 'reps', unit: 'x' },  // 6 (Halter tegen borst)
         { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' }, // 7
         { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },  // 8
         { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' },     // 9
         { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }   // 10
     ];
 
-    // HARD MODE PROGRESSION
+    // HARD MODE PROGRESSION (Aangepast voor max 50 Squats/60 Abs)
     const weeklyProgression = {
-        1: { plank: 60, pushup: 15, row_r:12, row_l:12, dips:12, squats:25, legraise: 15, bicycle: 30, twists: 30, leghold: 30 },
-        2: { plank: 70, pushup: 18, row_r:14, row_l:14, dips:14, squats:30, legraise: 18, bicycle: 36, twists: 36, leghold: 35 },
-        3: { plank: 80, pushup: 20, row_r:15, row_l:15, dips:15, squats:35, legraise: 20, bicycle: 40, twists: 40, leghold: 40 },
-        4: { plank: 90, pushup: 22, row_r:16, row_l:16, dips:18, squats:40, legraise: 20, bicycle: 44, twists: 44, leghold: 45 },
-        5: { plank: 100, pushup: 25, row_r:18, row_l:18, dips:20, squats:50, legraise: 25, bicycle: 50, twists: 50, leghold: 50 },
-        6: { plank: 120, pushup: 28, row_r:20, row_l:20, dips:22, squats:60, legraise: 25, bicycle: 60, twists: 60, leghold: 60 },
-        7: { plank: 150, pushup: 30, row_r:22, row_l:22, dips:25, squats:70, legraise: 30, bicycle: 70, twists: 70, leghold: 75 },
-        8: { plank: 180, pushup: 35, row_r:25, row_l:25, dips:30, squats:80, legraise: 30, bicycle: 80, twists: 80, leghold: 90 }
+        1: { plank: 60, pushup: 15, row_r:12, row_l:12, dips:12, squats:20, legraise: 15, bicycle: 24, twists: 24, leghold: 30 },
+        2: { plank: 70, pushup: 18, row_r:14, row_l:14, dips:14, squats:24, legraise: 18, bicycle: 30, twists: 30, leghold: 35 },
+        3: { plank: 80, pushup: 20, row_r:15, row_l:15, dips:15, squats:28, legraise: 20, bicycle: 34, twists: 34, leghold: 40 },
+        4: { plank: 90, pushup: 22, row_r:16, row_l:16, dips:18, squats:32, legraise: 22, bicycle: 40, twists: 40, leghold: 45 },
+        5: { plank: 100, pushup: 25, row_r:18, row_l:18, dips:20, squats:36, legraise: 25, bicycle: 44, twists: 44, leghold: 50 },
+        6: { plank: 120, pushup: 28, row_r:20, row_l:20, dips:22, squats:40, legraise: 28, bicycle: 50, twists: 50, leghold: 60 },
+        7: { plank: 150, pushup: 30, row_r:22, row_l:22, dips:25, squats:45, legraise: 30, bicycle: 56, twists: 56, leghold: 75 },
+        8: { plank: 180, pushup: 35, row_r:25, row_l:25, dips:30, squats:50, legraise: 35, bicycle: 60, twists: 60, leghold: 90 }
     };
 
     let state = { currentWeek: 1, history: [], totalExercisesDone: 0, isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, timerInterval: null, sessionStartTime: 0, sessionInterval: null, sessionDuration: 0 };
 
     window.onload = function() {
-        // We gebruiken dezelfde key 'abs_pro_v4' om stats te behouden!
-        let saved = localStorage.getItem('abs_pro_v4');
+        // BELANGRIJK: Nieuwe 'save key' voor Hard Mode = Reset Stats & Checks
+        let saved = localStorage.getItem('neon_hard_v1');
         if(saved) {
             const parsed = JSON.parse(saved);
             state.currentWeek = parsed.currentWeek || 1;
@@ -235,7 +241,7 @@
         updateLevelUI(); renderDashboard();
     };
 
-    function saveData() { localStorage.setItem('abs_pro_v4', JSON.stringify({ currentWeek: state.currentWeek, history: state.history, totalExercisesDone: state.totalExercisesDone })); }
+    function saveData() { localStorage.setItem('neon_hard_v1', JSON.stringify({ currentWeek: state.currentWeek, history: state.history, totalExercisesDone: state.totalExercisesDone })); }
 
     function getLevelInfo() {
         let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM) * 100;
