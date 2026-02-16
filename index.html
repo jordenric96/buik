@@ -6,216 +6,85 @@
     <meta name="theme-color" content="#0a0a14">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
-    <title>Neon Core RPG v7</title>
+    <title>Neon Core HARD MODE</title>
     <style>
         :root {
             /* --- NEON CYBER PALET --- */
             --bg-dark: #050505;
             --bg-grad: linear-gradient(135deg, #050505, #120012, #001212); 
-            
-            --neon-blue: #00f3ff;   /* XP / Levels */
-            --neon-green: #0aff00;  /* Success */
-            --neon-pink: #ff00ff;   /* Accents / Timer */
-            --neon-gold: #ffd700;   /* Rank Symbols */
-            
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            --blur: blur(10px);
-            --radius: 24px;
-            
-            --text: #ffffff;
-            --text-mute: #8b9bb4;
+            --neon-blue: #00f3ff; --neon-green: #0aff00; --neon-pink: #ff00ff; --neon-gold: #ffd700;
+            --glass-bg: rgba(255, 255, 255, 0.03); --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --radius: 24px; --text: #ffffff; --text-mute: #8b9bb4;
         }
-
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-grad);
-            background-attachment: fixed; 
-            color: var(--text);
-            margin: 0; padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden; overflow-y: auto;
-            -webkit-font-smoothing: antialiased;
-            user-select: none;
+            background: var(--bg-grad); background-attachment: fixed; 
+            color: var(--text); margin: 0; padding: 0; min-height: 100vh;
+            overflow-x: hidden; user-select: none;
         }
-
-        /* --- SCREENS --- */
-        .screen {
-            display: none; flex-direction: column;
-            min-height: 100vh; padding: 20px; padding-bottom: 140px; 
-            box-sizing: border-box;
-        }
+        .screen { display: none; flex-direction: column; min-height: 100vh; padding: 20px; padding-bottom: 140px; box-sizing: border-box; }
         .screen.active { display: flex; }
 
-        /* --- HEADER & LEVEL BAR --- */
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        h1 { 
-            font-size: 1.5rem; margin: 0; font-weight: 800; letter-spacing: 1px; 
-            text-shadow: 2px 2px 0px var(--neon-pink), -1px -1px 10px var(--neon-blue);
-        }
+        h1 { font-size: 1.5rem; margin: 0; font-weight: 800; letter-spacing: 1px; text-shadow: 2px 2px 0px var(--neon-pink), -1px -1px 10px var(--neon-blue); }
         
-        /* LEVEL SECTION */
+        /* LEVEL UI */
         .level-container { margin-bottom: 25px; text-align: center; }
-        .rank-symbol {
-            font-size: 3.5rem; margin-bottom: 5px; display: inline-block;
-            filter: drop-shadow(0 0 10px var(--neon-gold));
-            animation: float 3s ease-in-out infinite;
-        }
+        .rank-symbol { font-size: 3.5rem; margin-bottom: 5px; display: inline-block; filter: drop-shadow(0 0 10px var(--neon-gold)); animation: float 3s ease-in-out infinite; }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .level-title { font-size: 1.2rem; font-weight: bold; color: var(--neon-gold); letter-spacing: 2px; }
+        .xp-track { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; position: relative; }
+        .xp-fill { height: 100%; background: var(--neon-blue); width: 0%; box-shadow: 0 0 10px var(--neon-blue); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        .level-title { font-size: 1.2rem; font-weight: bold; color: var(--neon-gold); text-transform: uppercase; letter-spacing: 2px; }
-        .level-sub { font-size: 0.9rem; color: var(--text-mute); margin-bottom: 10px; }
-
-        /* XP BAR */
-        .xp-track {
-            width: 100%; height: 12px; background: rgba(255,255,255,0.1);
-            border-radius: 10px; overflow: hidden; position: relative;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-        }
-        .xp-fill {
-            height: 100%; background: var(--neon-blue);
-            width: 0%; box-shadow: 0 0 10px var(--neon-blue);
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .btn-icon {
-            background: rgba(255, 255, 255, 0.05); border: var(--glass-border);
-            backdrop-filter: var(--blur); color: var(--text); border-radius: 50%;
-            width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); 
-        }
-
-        /* --- PANELS --- */
-        .glass-panel {
-            background: var(--glass-bg); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-            border: var(--glass-border); box-shadow: var(--glass-shadow); border-radius: var(--radius);
-            padding: 25px; margin-bottom: 25px; position: relative; overflow: hidden;
-        }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(10px); border: var(--glass-border); border-radius: var(--radius); padding: 25px; margin-bottom: 25px; position: relative; overflow: hidden; }
         .panel-blue::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
         .panel-pink::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
+        .btn-icon { background: rgba(255,255,255,0.05); border: var(--glass-border); color: var(--text); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .week-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .week-title { font-weight: 800; font-size: 1.4rem; text-align: center; }
-        .week-focus { font-size: 0.9rem; color: var(--text-mute); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; text-align: center;}
+        .tracker-container { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .check-circle { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .check-circle.completed { background: var(--neon-green); border: none; color: #000; box-shadow: 0 0 15px var(--neon-green); }
 
-        .tracker-container { display: flex; justify-content: center; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
-        .check-circle {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center;
-            color: transparent; font-size: 1.2rem; transition: all 0.4s;
-        }
-        .check-circle.completed {
-            background: var(--neon-green); border: none; color: #000;
-            transform: scale(1.1); box-shadow: 0 0 20px var(--neon-green);
-        }
+        .preview-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .preview-item span:last-child { color: var(--neon-blue); font-weight: 800; }
 
-        .preview-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 1.1rem; }
-        .preview-item:last-child { border-bottom: none; }
-        .preview-item span:last-child { color: var(--neon-blue); font-weight: 800; text-shadow: 0 0 8px var(--neon-blue); }
-
-        /* --- PLAYER --- */
-        #playerScreen {
-            background: rgba(5, 5, 10, 0.98);
-            text-align: center; justify-content: center; align-items: center;
-            padding-bottom: 20px; z-index: 50;
-        }
-
-        .player-xp-container {
-            position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px; box-sizing: border-box;
-            background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-        }
+        /* PLAYER */
+        #playerScreen { background: rgba(5, 5, 10, 0.98); text-align: center; justify-content: center; align-items: center; padding-bottom: 20px; z-index: 50; }
+        .player-xp-container { position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px; box-sizing: border-box; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
         .xp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .xp-level-group { display: flex; align-items: center; gap: 10px; }
-        .game-symbol { font-size: 2rem; filter: drop-shadow(0 0 5px var(--neon-gold)); animation: pulseSymbol 2s infinite ease-in-out; }
+        .game-symbol { font-size: 2rem; filter: drop-shadow(0 0 5px var(--neon-gold)); animation: pulseSymbol 2s infinite; }
         @keyframes pulseSymbol { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .xp-text { font-size: 1rem; color: var(--neon-blue); font-weight: 800; letter-spacing: 1px; }
         
-        /* SESSION TIMER */
-        .session-timer {
-            position: absolute; top: 80px; width: 100%; text-align: center;
-            font-family: monospace; font-size: 1.5rem; font-weight: bold;
-            color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink);
-            letter-spacing: 2px;
-        }
-
-        .timer-circle {
-            width: 240px; height: 240px; border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.05); 
-            display: flex; align-items: center; justify-content: center;
-            margin: 110px auto 30px auto; font-size: 5rem; font-weight: 900;
-            font-variant-numeric: tabular-nums; transition: all 0.5s ease;
-        }
-
-        .xp-float {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 3rem; font-weight: 900; color: var(--neon-blue);
-            text-shadow: 0 0 20px var(--neon-blue); opacity: 0; pointer-events: none; z-index: 60;
-        }
+        .session-timer { position: absolute; top: 90px; width: 100%; text-align: center; font-family: monospace; font-size: 1.5rem; font-weight: bold; color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+        .timer-circle { width: 220px; height: 220px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 120px auto 30px auto; font-size: 4.5rem; font-weight: 900; font-variant-numeric: tabular-nums; transition: all 0.5s ease; }
+        
+        .xp-float { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue); opacity: 0; pointer-events: none; z-index: 60; }
         .xp-float.animate { animation: xpUp 1s ease-out forwards; }
         @keyframes xpUp { 0% { opacity: 0; transform: translate(-50%, 0); } 20% { opacity: 1; transform: translate(-50%, -30px); } 100% { opacity: 0; transform: translate(-50%, -80px); } }
 
-        .player-instruction { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 1px; text-shadow: 0 0 15px currentColor; }
-        .player-detail { font-size: 1.2rem; color: var(--text-mute); text-transform: uppercase; letter-spacing: 2px;}
-
-        /* STATES */
         .state-rest .timer-circle { box-shadow: 0 0 50px var(--neon-pink), inset 0 0 20px var(--neon-pink); color: var(--neon-pink); border-color: var(--neon-pink); }
         .state-work .timer-circle { box-shadow: 0 0 60px var(--neon-blue), inset 0 0 30px var(--neon-blue); color: var(--neon-blue); border-color: var(--neon-blue); }
         .state-manual .timer-circle { box-shadow: 0 0 50px var(--neon-green), inset 0 0 20px var(--neon-green); color: var(--neon-green); border-style: dashed; border-color: var(--neon-green); }
 
-        /* BUTTONS */
-        .bottom-action-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px;
-            background: linear-gradient(to top, #000 70%, transparent);
-            text-align: center; z-index: 100; box-sizing: border-box;
-        }
-        .big-btn {
-            background: var(--neon-blue); color: #000; border: none;
-            width: 100%; max-width: 500px; padding: 20px;
-            font-size: 1.3rem; font-weight: 900; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 0 30px var(--neon-blue);
-            text-transform: uppercase; letter-spacing: 2px; transition: transform 0.1s;
-        }
+        .bottom-action-bar { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px; background: linear-gradient(to top, #000 80%, transparent); text-align: center; z-index: 100; box-sizing: border-box; }
+        .big-btn { background: var(--neon-blue); color: #000; border: none; width: 100%; max-width: 500px; padding: 20px; font-size: 1.3rem; font-weight: 900; border-radius: 50px; cursor: pointer; box-shadow: 0 0 30px var(--neon-blue); text-transform: uppercase; letter-spacing: 2px; }
         .big-btn:active { transform: scale(0.98); }
         .action-btn { background: var(--neon-green); box-shadow: 0 0 30px var(--neon-green); color: #000; }
-        
-        .stop-link {
-            color: var(--neon-pink); text-decoration: underline; background: none; border: none; 
-            margin-top: 20px; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .stop-link { color: var(--neon-pink); text-decoration: underline; background: none; border: none; margin-top: 15px; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; }
 
-        /* MODAL & STATS */
-        #modalOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
-            z-index: 999; display: none; align-items: center; justify-content: center;
-        }
+        /* MODAL */
+        #modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 999; display: none; align-items: center; justify-content: center; }
         #modalOverlay.show { display: flex; }
-        .modal-content {
-            background: #0f0518; border: 2px solid var(--neon-pink);
-            padding: 40px; border-radius: 30px; text-align: center;
-            max-width: 80%; box-shadow: 0 0 60px var(--neon-pink);
-        }
-        .close-modal-btn { 
-            background: transparent; border: 2px solid var(--neon-pink); color: var(--neon-pink);
-            margin-top: 20px; padding: 15px 30px; border-radius: 30px; 
-            font-weight:bold; cursor: pointer; box-shadow: 0 0 15px var(--neon-pink);
-            text-transform: uppercase;
-        }
+        .modal-content { background: #0f0518; border: 2px solid var(--neon-pink); padding: 40px; border-radius: 30px; text-align: center; max-width: 85%; box-shadow: 0 0 60px var(--neon-pink); }
+        .close-modal-btn { background: transparent; border: 2px solid var(--neon-pink); color: var(--neon-pink); margin-top: 20px; padding: 15px 30px; border-radius: 30px; font-weight:bold; cursor: pointer; box-shadow: 0 0 15px var(--neon-pink); text-transform: uppercase; }
 
+        /* STATS */
         #statsScreen { background: #050505; z-index: 100; }
-        .grand-total-box { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--neon-pink);
-            padding: 20px; border-radius: var(--radius); margin-bottom: 20px; 
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); color: #fff;
-        }
-        .stats-detail-row {
-            display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;
-        }
-        .stats-detail-row:last-child { border-bottom: none; }
-        .stats-detail-row span:last-child { color: var(--neon-blue); font-weight: bold; }
-
+        .grand-total-box { background: rgba(255,255,255,0.05); border: 1px solid var(--neon-pink); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); color: #fff; }
+        .stats-detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -229,7 +98,7 @@
         <div class="level-container">
             <div class="rank-symbol" id="dashSymbol">🌱</div>
             <div class="level-title" id="dashLevelTitle">LEVEL 1</div>
-            <div class="level-sub" id="dashNextLevel">Train voor je volgende rank</div>
+            <div class="level-sub" id="dashNextLevel">Hard Mode Activated</div>
             <div style="width: 80%; margin: 0 auto;">
                 <div class="xp-track"><div class="xp-fill" id="dashXpBar"></div></div>
             </div>
@@ -240,7 +109,7 @@
                 <button class="btn-icon" onclick="changeWeek(-1)">←</button>
                 <div>
                     <div class="week-title" id="weekDisplay">Week 1</div>
-                    <div class="week-focus">Focus: Fundering</div>
+                    <div style="font-size:0.8rem; color:var(--text-mute); margin-top:5px; text-align:center;">HARD MODE</div>
                 </div>
                 <button class="btn-icon" onclick="changeWeek(1)">→</button>
             </div>
@@ -271,14 +140,13 @@
         </div>
 
         <div class="session-timer" id="sessionTimerDisplay">00:00</div>
-
         <div class="xp-float" id="xpFloat">+XP</div>
 
         <div style="width: 100%;">
-            <div class="timer-circle" id="timerDisplay">8</div>
-            <div class="player-instruction" id="exName">Klaarmaken...</div>
-            <div class="player-detail" id="exDetail">Start in</div>
-            <div id="roundDisplay" style="color:var(--text-mute); margin-top:10px; font-weight:bold;">Ronde 1 / 3</div>
+            <div class="timer-circle" id="timerDisplay">6</div>
+            <div style="text-align:center; font-size:1.8rem; font-weight:800; margin-bottom:5px;" id="exName">Klaarmaken...</div>
+            <div style="text-align:center; font-size:1.2rem; color:var(--text-mute);" id="exDetail">Start in</div>
+            <div id="roundDisplay" style="text-align:center; color:var(--text-mute); margin-top:15px; font-weight:bold;">Ronde 1 / 3</div>
         </div>
 
         <div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
@@ -305,22 +173,12 @@
     </div>
 
 <script>
-    // --- 100 RANKS SYMBOLS ---
-    const RANK_SYMBOLS = [
-        "🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨","🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂", 
-        "🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀","🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇", 
-        "🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍","zebra","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌", 
-        "🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏","🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐", 
-        "🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟","🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕","👑"
-    ];
+    const RANK_SYMBOLS = ["🌱","🦠","🧬","🥚","🪵","🪨","🧱","🔧","🪛","🔨","🐞","🪱","🦟","🪳","🕷️","🦗","🦋","🐛","🐌","🦂","🐭","🐹","🐰","🐿️","🦔","🦎","🐢","🐍","🐸","🦀","🐓","🦃","🦆","🦢","🦜","🦩","🦚","🦉","🦅","🦇","🐈","🐕","🦊","🦝","🦡","🦦","🦨","🦘","🐒","🦍","zebra","🐎","🐂","🐃","🐄","🐖","🐏","🐑","🐐","🦌","🐆","🐅","🦁","🐺","🐻","🐻‍❄️","🐼","🐨","🐘","🦏","🌪️","🔥","🌊","⚡","❄️","☄️","🌑","🌕","☀️","⭐","🤺","🏇","🏋️","🤸","🥷","🦸","🧞","🧜","🧛","🧟","🐉","🐲","🦖","🦕","🦈","🐋","🐙","🦑","🐊","🦕","👑"];
 
-    // --- CONFIG: 10 OEFENINGEN ---
     const TOTAL_EXERCISES_IN_PROGRAM = 8 * 3 * 3 * 10; 
-
-    // --- TIMERS CONFIG (AANGEPAST) ---
     const TOTAL_ROUNDS = 3;
-    const PREP_TIME = 6;    // <-- 6 Seconden Prep
-    const ROUND_REST = 90;  // <-- 90 Seconden Ronde Rust
+    const PREP_TIME = 6;    // 6 sec rust tussen oefeningen
+    const ROUND_REST = 90;  // 90 sec rust na ronde
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq = 440, duration = 0.1, type = 'sine') {
@@ -337,41 +195,36 @@
     async function requestWakeLock() { try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {} }
     async function releaseWakeLock() { if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; } }
 
-    // --- DATA (SQUATS VERVANGT STRETCH) ---
+    // DATA: 10 OEFENINGEN
     const exercises = [
-        { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' }, // 1. Warmup
-        { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' },  // 2. Duwen
-        { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // 3. Trekken R
-        { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // 4. Trekken L
-        { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // 5. Isolatie
-        { id: 'squats', name: 'Air Squats', type: 'reps', unit: 'x' },      // 6. Benen (Squats ipv Stretch)
-        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' }, // 7. Zwaar Core
-        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },  // 8. Schuin
-        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' },     // 9. Rotatie
-        { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }   // 10. Finisher
+        { id: 'plank', name: 'De Plank', type: 'time', unit: 'sec' }, // 1
+        { id: 'pushup', name: 'Push-ups', type: 'reps', unit: 'x' },  // 2
+        { id: 'row_r', name: 'DB Row (Rechts)', type: 'reps', unit: 'x' }, // 3
+        { id: 'row_l', name: 'DB Row (Links)', type: 'reps', unit: 'x' },  // 4
+        { id: 'dips', name: 'Tricep Dips', type: 'reps', unit: 'x' },      // 5
+        { id: 'squats', name: 'Goblet Squats', type: 'reps', unit: 'x' },  // 6 (NAAM AANGEPAST VOOR HALTER)
+        { id: 'legraise', name: 'Lying Leg Raises', type: 'reps', unit: 'x' }, // 7
+        { id: 'bicycle', name: 'Bicycle Crunches', type: 'reps', unit: 'x' },  // 8
+        { id: 'twists', name: 'Russian Twists', type: 'reps', unit: 'x' },     // 9
+        { id: 'leghold', name: 'Leg Hold (5cm)', type: 'time', unit: 'sec' }   // 10
     ];
 
-    // SQUATS PROGRESSIE TOEGEVOEGD
+    // HARD MODE PROGRESSION
     const weeklyProgression = {
-        1: { plank: 30, pushup: 8, row_r:10, row_l:10, dips:8, squats:15, legraise: 10, bicycle: 20, twists: 20, leghold: 15 },
-        2: { plank: 35, pushup: 10, row_r:12, row_l:12, dips:10, squats:18, legraise: 12, bicycle: 24, twists: 24, leghold: 20 },
-        3: { plank: 40, pushup: 12, row_r:12, row_l:12, dips:12, squats:20, legraise: 14, bicycle: 30, twists: 30, leghold: 20 },
-        4: { plank: 45, pushup: 15, row_r:15, row_l:15, dips:15, squats:25, legraise: 15, bicycle: 36, twists: 36, leghold: 25 },
-        5: { plank: 50, pushup: 18, row_r:15, row_l:15, dips:15, squats:30, legraise: 15, bicycle: 40, twists: 40, leghold: 30 },
-        6: { plank: 60, pushup: 20, row_r:18, row_l:18, dips:18, squats:35, legraise: 18, bicycle: 44, twists: 44, leghold: 30 },
-        7: { plank: 75, pushup: 22, row_r:20, row_l:20, dips:20, squats:40, legraise: 20, bicycle: 50, twists: 50, leghold: 40 },
-        8: { plank: 90, pushup: 25, row_r:20, row_l:20, dips:25, squats:50, legraise: 20, bicycle: 60, twists: 60, leghold: 45 }
+        1: { plank: 60, pushup: 15, row_r:12, row_l:12, dips:12, squats:25, legraise: 15, bicycle: 30, twists: 30, leghold: 30 },
+        2: { plank: 70, pushup: 18, row_r:14, row_l:14, dips:14, squats:30, legraise: 18, bicycle: 36, twists: 36, leghold: 35 },
+        3: { plank: 80, pushup: 20, row_r:15, row_l:15, dips:15, squats:35, legraise: 20, bicycle: 40, twists: 40, leghold: 40 },
+        4: { plank: 90, pushup: 22, row_r:16, row_l:16, dips:18, squats:40, legraise: 20, bicycle: 44, twists: 44, leghold: 45 },
+        5: { plank: 100, pushup: 25, row_r:18, row_l:18, dips:20, squats:50, legraise: 25, bicycle: 50, twists: 50, leghold: 50 },
+        6: { plank: 120, pushup: 28, row_r:20, row_l:20, dips:22, squats:60, legraise: 25, bicycle: 60, twists: 60, leghold: 60 },
+        7: { plank: 150, pushup: 30, row_r:22, row_l:22, dips:25, squats:70, legraise: 30, bicycle: 70, twists: 70, leghold: 75 },
+        8: { plank: 180, pushup: 35, row_r:25, row_l:25, dips:30, squats:80, legraise: 30, bicycle: 80, twists: 80, leghold: 90 }
     };
 
-    let state = {
-        currentWeek: 1, history: [], totalExercisesDone: 0,
-        isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, 
-        timerInterval: null,
-        sessionStartTime: 0, sessionInterval: null, sessionDuration: 0
-    };
+    let state = { currentWeek: 1, history: [], totalExercisesDone: 0, isActive: false, round: 1, exIndex: 0, phase: 'idle', timeLeft: 0, timerInterval: null, sessionStartTime: 0, sessionInterval: null, sessionDuration: 0 };
 
-    // --- INIT ---
     window.onload = function() {
+        // We gebruiken dezelfde key 'abs_pro_v4' om stats te behouden!
         let saved = localStorage.getItem('abs_pro_v4');
         if(saved) {
             const parsed = JSON.parse(saved);
@@ -379,27 +232,16 @@
             state.history = parsed.history || [];
             state.totalExercisesDone = parsed.totalExercisesDone || 0;
         }
-        updateLevelUI();
-        renderDashboard();
+        updateLevelUI(); renderDashboard();
     };
 
-    function saveData() {
-        localStorage.setItem('abs_pro_v4', JSON.stringify({
-            currentWeek: state.currentWeek, 
-            history: state.history,
-            totalExercisesDone: state.totalExercisesDone
-        }));
-    }
+    function saveData() { localStorage.setItem('abs_pro_v4', JSON.stringify({ currentWeek: state.currentWeek, history: state.history, totalExercisesDone: state.totalExercisesDone })); }
 
-    // --- LEVEL LOGIC ---
     function getLevelInfo() {
         let rawLevel = (state.totalExercisesDone / TOTAL_EXERCISES_IN_PROGRAM) * 100;
-        let level = Math.floor(rawLevel) + 1;
-        if(level > 100) level = 100;
-        let progress = (rawLevel % 1) * 100; 
-        if(level === 100) progress = 100;
-        let symbolIndex = level - 1;
-        if(symbolIndex >= RANK_SYMBOLS.length) symbolIndex = RANK_SYMBOLS.length - 1;
+        let level = Math.floor(rawLevel) + 1; if(level > 100) level = 100;
+        let progress = (rawLevel % 1) * 100; if(level === 100) progress = 100;
+        let symbolIndex = level - 1; if(symbolIndex >= RANK_SYMBOLS.length) symbolIndex = RANK_SYMBOLS.length - 1;
         return { level, progress, symbol: RANK_SYMBOLS[symbolIndex] };
     }
 
@@ -413,16 +255,12 @@
         document.getElementById('gameXpBar').style.width = `${info.progress}%`;
     }
 
-    // --- DASHBOARD ---
     function renderDashboard() {
         document.getElementById('weekDisplay').innerText = `Week ${state.currentWeek}`;
         const targets = weeklyProgression[state.currentWeek];
         const list = document.getElementById('previewList');
         list.innerHTML = '';
-        exercises.forEach(ex => {
-            const val = targets[ex.id];
-            list.innerHTML += `<div class="preview-item"><span>${ex.name}</span><span>${val} ${ex.unit}</span></div>`;
-        });
+        exercises.forEach(ex => { list.innerHTML += `<div class="preview-item"><span>${ex.name}</span><span>${targets[ex.id]} ${ex.unit}</span></div>`; });
 
         const workoutsThisWeek = state.history.filter(h => h.week === state.currentWeek).length;
         const tracker = document.getElementById('weekTracker');
@@ -436,263 +274,21 @@
 
     function changeWeek(dir) {
         if((state.currentWeek === 1 && dir === -1) || (state.currentWeek === 8 && dir === 1)) return;
-        state.currentWeek += dir;
-        renderDashboard();
+        state.currentWeek += dir; renderDashboard();
     }
 
-    // --- PLAYER LOGIC ---
     function startWorkout() {
-        requestWakeLock();
-        if(audioCtx.state === 'suspended') audioCtx.resume();
-
+        requestWakeLock(); if(audioCtx.state === 'suspended') audioCtx.resume();
         state.isActive = true; state.round = 1; state.exIndex = 0;
         updateLevelUI(); 
-        
-        state.sessionStartTime = Date.now();
-        state.sessionDuration = 0;
+        state.sessionStartTime = Date.now(); state.sessionDuration = 0;
         if(state.sessionInterval) clearInterval(state.sessionInterval);
         state.sessionInterval = setInterval(updateSessionTimer, 1000);
-
         document.getElementById('dashboardScreen').classList.remove('active');
         document.getElementById('playerScreen').classList.add('active');
         startPrep();
     }
 
     function updateSessionTimer() {
-        const now = Date.now();
-        const diff = Math.floor((now - state.sessionStartTime) / 1000);
-        state.sessionDuration = diff;
-        
-        const m = Math.floor(diff / 60).toString().padStart(2, '0');
-        const s = (diff % 60).toString().padStart(2, '0');
-        document.getElementById('sessionTimerDisplay').innerText = `${m}:${s}`;
-    }
-
-    function startPrep() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        state.phase = 'prep';
-        state.timeLeft = PREP_TIME;
-        
-        const currentEx = exercises[state.exIndex];
-        
-        document.getElementById('playerScreen').className = 'screen active state-rest';
-        document.getElementById('roundDisplay').innerText = `Ronde ${state.round} / ${TOTAL_ROUNDS}`;
-        document.getElementById('exName').innerText = "RUST / WISSEL";
-        document.getElementById('exDetail').innerText = "Volgende: " + currentEx.name;
-        document.getElementById('actionBtn').style.display = 'none';
-        
-        updateTimerDisplay();
-
-        state.timerInterval = setInterval(() => {
-            state.timeLeft--;
-            updateTimerDisplay();
-            if(state.timeLeft > 0 && state.timeLeft <= 3) playBeep(600, 0.05);
-            if(state.timeLeft <= 0) startExercise();
-        }, 1000);
-    }
-
-    function startExercise() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        const currentEx = exercises[state.exIndex];
-        const targets = weeklyProgression[state.currentWeek];
-        const targetVal = targets[currentEx.id];
-
-        document.getElementById('exName').innerText = currentEx.name;
-        
-        if (currentEx.type === 'time') {
-            state.phase = 'work';
-            state.timeLeft = targetVal;
-            document.getElementById('playerScreen').className = 'screen active state-work';
-            document.getElementById('exDetail').innerText = "HOU VOL!";
-            document.getElementById('actionBtn').style.display = 'none';
-            
-            updateTimerDisplay();
-            
-            state.timerInterval = setInterval(() => {
-                state.timeLeft--;
-                updateTimerDisplay();
-                if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(880, 0.1);
-                if(state.timeLeft <= 0) {
-                    playBeep(1200, 0.3);
-                    completeStep();
-                }
-            }, 1000);
-        } else {
-            state.phase = 'manual';
-            document.getElementById('playerScreen').className = 'screen active state-manual';
-            document.getElementById('exDetail').innerText = `Doe ${targetVal} herhalingen`;
-            document.getElementById('timerDisplay').innerText = targetVal;
-            document.getElementById('actionBtn').style.display = 'block';
-        }
-    }
-
-    function handleAction() {
-        if(state.phase === 'manual') completeStep();
-    }
-
-    function completeStep() {
-        state.totalExercisesDone++;
-        saveData();
-        updateLevelUI(); 
-        const floatEl = document.getElementById('xpFloat');
-        floatEl.classList.remove('animate');
-        void floatEl.offsetWidth; 
-        floatEl.classList.add('animate');
-        nextStep();
-    }
-
-    function nextStep() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        if (state.exIndex < exercises.length - 1) {
-            state.exIndex++;
-            startPrep();
-        } else {
-            if (state.round < TOTAL_ROUNDS) {
-                state.round++;
-                state.exIndex = 0;
-                startRoundRest();
-            } else {
-                finishWorkout(true);
-            }
-        }
-    }
-
-    function startRoundRest() {
-        state.timeLeft = ROUND_REST;
-        state.phase = 'prep'; 
-        document.getElementById('playerScreen').className = 'screen active state-rest';
-        document.getElementById('exName').innerText = "GROTE PAUZE";
-        document.getElementById('exDetail').innerText = "Even op adem komen...";
-        document.getElementById('actionBtn').style.display = 'none';
-
-        state.timerInterval = setInterval(() => {
-            state.timeLeft--;
-            updateTimerDisplay();
-            if(state.timeLeft > 0 && state.timeLeft <= 5) playBeep(600, 0.05);
-            if(state.timeLeft <= 0) startExercise();
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        document.getElementById('timerDisplay').innerText = state.timeLeft;
-    }
-
-    function quitWorkout() {
-        if(state.sessionInterval) clearInterval(state.sessionInterval);
-        openModal("TRAINING GESTOPT", "XP is opgeslagen. Sessie telt niet voor weekdoel.", false);
-    }
-
-    function finishWorkout(success) {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        if(state.sessionInterval) clearInterval(state.sessionInterval);
-        releaseWakeLock();
-        
-        if(success) {
-            state.history.push({ 
-                date: new Date().toISOString(), 
-                week: state.currentWeek,
-                duration: state.sessionDuration 
-            });
-            saveData();
-            openModal("TRAINING COMPLEET!", "XP & Sessie Opgeslagen!", true);
-        }
-    }
-
-    function openModal(title, text, isSuccess) {
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalTitle').style.textShadow = isSuccess ? '0 0 10px var(--neon-green)' : '0 0 10px var(--neon-pink)';
-        document.getElementById('modalIcon').innerText = isSuccess ? '🏆' : '💾';
-        document.getElementById('modalText').innerText = text;
-        document.getElementById('modalOverlay').classList.add('show');
-    }
-
-    function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('show');
-        document.getElementById('playerScreen').classList.remove('active');
-        document.getElementById('dashboardScreen').classList.add('active');
-        renderDashboard();
-    }
-
-    // --- STATS CALCULATION ---
-    function showStats() {
-        document.getElementById('dashboardScreen').classList.remove('active');
-        document.getElementById('statsScreen').classList.add('active');
-        calculateStats();
-    }
-    function closeStats() {
-        document.getElementById('statsScreen').classList.remove('active');
-        document.getElementById('dashboardScreen').classList.add('active');
-    }
-
-    function calculateStats() {
-        const container = document.getElementById('statsContent');
-        container.innerHTML = '';
-        
-        let grandTotal = {}; 
-        exercises.forEach(ex => grandTotal[ex.id] = 0);
-        
-        let totalSecondsTrained = 0;
-
-        // Build stats
-        for(let w=1; w<=8; w++) {
-            const workouts = state.history.filter(h => h.week === w);
-            const count = workouts.length;
-            if(count === 0) continue;
-
-            const targets = weeklyProgression[w];
-            
-            workouts.forEach(w => {
-                if(w.duration) totalSecondsTrained += w.duration;
-            });
-
-            let weekHtml = `
-                <div class="glass-panel panel-blue">
-                    <h3 style="margin:0; color:#fff;">Week ${w} <span style="font-size:0.8rem; color:var(--text-mute)">(${count} trainingen)</span></h3>
-                    <div style="margin-top:10px;">
-            `;
-
-            exercises.forEach(ex => {
-                const totalForEx = targets[ex.id] * 3 * count; 
-                grandTotal[ex.id] += totalForEx;
-                
-                weekHtml += `
-                    <div class="stats-detail-row">
-                        <span>${ex.name}</span>
-                        <span>${totalForEx} ${ex.unit}</span>
-                    </div>
-                `;
-            });
-            
-            weekHtml += `</div></div>`;
-            container.innerHTML += weekHtml; 
-        }
-
-        let hours = Math.floor(totalSecondsTrained / 3600);
-        let mins = Math.floor((totalSecondsTrained % 3600) / 60);
-        let timeString = hours > 0 ? `${hours}u ${mins}m` : `${mins} min`;
-
-        let grandTotalHtml = `
-            <div class="grand-total-box">
-                <h2 style="margin:0 0 5px 0; color:var(--neon-pink); text-align:center;">TOTAAL ALLER TIJDEN</h2>
-                <div style="text-align:center; margin-bottom:15px; color:var(--neon-blue); font-size:1.5rem; font-weight:bold;">
-                    ⏱️ ${timeString}
-                </div>
-        `;
-        
-        exercises.forEach(ex => {
-            grandTotalHtml += `
-                <div class="stats-detail-row">
-                    <span>${ex.name}</span>
-                    <span style="font-size:1.1rem; color:var(--neon-gold);">${grandTotal[ex.id]} ${ex.unit}</span>
-                </div>
-            `;
-        });
-        grandTotalHtml += `</div>`;
-
-        container.innerHTML = grandTotalHtml + container.innerHTML;
-
-        if(state.history.length === 0) container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-mute);">Nog geen data.</div>';
-    }
-</script>
-</body>
-</html>
+        const diff = Math.floor((Date.now() - state.sessionStartTime) / 1000);
+  
